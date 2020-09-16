@@ -1,0 +1,4 @@
+{
+    "mongoURI": "mongodb+srv://vask012:montekristo90@cluster0.rq0c5.mongodb.net/bebirondb?retryWrites=true&w=majority",
+    "jwtSecret": "sl_myJwtSecret"
+}
