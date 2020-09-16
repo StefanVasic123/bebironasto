@@ -5,6 +5,7 @@ import {
     InputGroup,
     FormControl
 } from 'react-bootstrap';
+import '../../App.css';
 
 const SleepingInfo = () => {
     const [passedSleepingTime, setPassedSleepingTime] = useState('');
@@ -30,6 +31,9 @@ const SleepingInfo = () => {
     const [awaikPercentPeriod, setAwaikPercentPeriod] = useState(null);
     const [periodSleepingDurationReduced, setPeriodSleepingDurationReduced] = useState([]);
     const [sleepPeriodIntervalDuration, setSleepPeriodIntervalDuration]= useState([]);
+
+    const [passingSleepingTimeRow, setPassingSleepingTimeRow] = useState(false);
+    const [totalSleepingTimeRow, setTotalSleepingTimeRow] = useState(false);
 
     function millisecToTimeHours(arg) {
         let hours = arg / 3600000; // 1.16
@@ -80,7 +84,6 @@ const SleepingInfo = () => {
             let minutes = (lastSleeping / (1000 * 60)) % 60;
             let hours = (lastSleeping / (1000 * 60 * 60)) % 24;
             let seconds = (lastSleeping / 1000) % 60;
-            console.log(lastSleeping, minutes, hours, seconds)
             if(isNaN(seconds)) { // if it's before 00:00
                 const check = async () => {
                     await axios.post('/api/sleep/thisDay', {
@@ -88,12 +91,13 @@ const SleepingInfo = () => {
                     shortDate: `${new Date().getFullYear()}-${getMonth()}-${newDateMinusDay}`
                     })
                     .then(res => {
-                    console.log(res.data);
                     let resArr = res.data.map(item => item.sleepingDuration)
                     let toNmb = resArr.map(item => Number(item))
                     let lastSleeping = Date.now() - Math.max(...toNmb);
                     let minutes = (lastSleeping / (1000 * 60)) % 60;
                     let hours = (lastSleeping / (1000 * 60 * 60)) % 24;
+
+                    setPassingSleepingTimeRow(!passingSleepingTimeRow);
 
                     return setPassedSleepingTime(hours.toFixed(0)  + "h : " + minutes.toFixed(0) + "min")
                     })
@@ -101,6 +105,8 @@ const SleepingInfo = () => {
                 }
                 check();
             } else {
+                setPassingSleepingTimeRow(!passingSleepingTimeRow);
+
                 return setPassedSleepingTime(hours.toFixed(0)  + "h : " + minutes.toFixed(0) + "min")
             }
         })
@@ -113,9 +119,9 @@ const SleepingInfo = () => {
             shortDate: `${new Date().getFullYear()}-${getMonth()}-${newDate}`
         })
         .then(res => {
-            console.log(res.data);
             let total = res.data.map(item => item.sleepingDuration).reduce((a, b) => a + b);
-            setTotalSleepingTime(millisecToTimeHours(total))
+            setTotalSleepingTime(millisecToTimeHours(total));
+            setTotalSleepingTimeRow(!totalSleepingTimeRow);
         })
         .catch(err => alert(err))
     }
@@ -227,19 +233,29 @@ const SleepingInfo = () => {
     return (
         <div>
             {/* proteklo vreme od poslednjeg budjenja */}
-            <div>
-            <Button variant="outline-info" onClick={millisecOfLastSleeping}>proteklo vreme od poslednjeg budjenja</Button>
-            {passedSleepingTime}
-            </div>
+            <div className="sleeping-info-btns">
+                <div>
+                    <Button variant="outline-info" onClick={millisecOfLastSleeping}>vreme od poslednjeg budjenja</Button>
+                    {passingSleepingTimeRow && (
+                    <div style={{ textAlign: "center" }}>
+                        {passedSleepingTime}
+                    </div>
+                    )}
+                </div>
 
-            {/* spavkanje - danas */}
-            <div>
-            <Button variant="outline-info" onClick={totalSleeping}>spavkanje - danas</Button>
-            {totalSleepingTime}
+                {/* spavkanje - danas */}
+                <div>
+                    <Button variant="outline-info" onClick={totalSleeping}>spavanje danas - ukupno</Button>
+                    {totalSleepingTimeRow && (
+                    <div style={{ textAlign: "center" }}>
+                        {totalSleepingTime}
+                    </div>
+                    )}
+                </div>
             </div>
 
             {/* spavkanje - izabrani dan */}
-            <h4>za dan:</h4>
+            <h4 style={{ textAlign: "center" }}>Dan:</h4>
             <InputGroup className="mb-3">
                     <FormControl
                         type="date"
@@ -257,23 +273,24 @@ const SleepingInfo = () => {
                 <div>
                     <ul key={index} index={index} style={{ listStyleType: "none", textDecoration: "none" }}>
                         <li>
-                            {millisecToTimeHours(item.sleepingDuration)}
+                            trajanje spavanja: {millisecToTimeHours(item.sleepingDuration)}
                         </li>
                         <li>
-                            {millisecToTimeHoursBlank(item.startSleep) !== 'NaN:NaN' ? `${millisecToTimeHoursBlank(item.startSleep)} - ${millisecToTimeHoursBlank(item.finishSleep)}` : millisecToTimeHoursBlank(item.finishSleep)}
-                        </li>                        
+                            od-do: {millisecToTimeHoursBlank(item.startSleep) !== 'NaN:NaN' ? `${millisecToTimeHoursBlank(item.startSleep)} - ${millisecToTimeHoursBlank(item.finishSleep)}` : millisecToTimeHoursBlank(item.finishSleep)}
+                        </li>      
+                        <hr />                  
                     </ul>
                 </div>
             ))}
             <div>
-                Ukupno vreme spavanja danas je {millisecToTimeHoursHour(sleepDurationReduced)} <br />
+                Ukupno vreme spavanja danas je {millisecToTimeHours(sleepDurationReduced)} <br />
                 Ukupno {dayTotal.length} puta <br />
                 U proseku {millisecToTimeHours(sleepDurationReduced / dayTotal.length)}
             </div>
         </div>
         )}
             {/* spavkanje - izabrani mesec */}
-            <h4>za mesec:</h4>
+            <h4 style={{ textAlign: "center" }}>Mesec:</h4>
             <div className="input-group mb-3">
             <div className="input-group-prepend">
                 <label className="input-group-text" htmlFor="inputGroupSelect01-sleep" onClick={() => getSpecificMonth()} style={{ cursor: "pointer" }}>Meseci</label>
@@ -304,7 +321,7 @@ const SleepingInfo = () => {
             </div>
             )}
             {/* spavkanje - izabrani period */}
-            <h4>za period:</h4>
+            <h4 style={{ textAlign: "center" }}>Period:</h4>
             <div className="input-group mb-3">
             <div className="input-group-prepend">
                 <label className="input-group-text" htmlFor="inputGroupSelect02-sleep">Za mesec</label>

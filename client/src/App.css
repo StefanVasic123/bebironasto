@@ -143,6 +143,11 @@ body {
     }
 
     /* Sleeping Modal */
+    /* info */
+    .sleeping-info-btns {
+      display: flex;
+      justify-content: space-between;
+    }
     /* footer */
     .modal-footer-sleeping {
       display: flex;

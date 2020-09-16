@@ -21,6 +21,9 @@ const SleepingModal = () => {
 
     const [mainSleep, setMainSleep] = useState(true);
 
+    const [mainText, setMainText] = useState(true);
+    const [secondText, setSecondText] = useState(false);
+
     const [startSleeping, setStartSleeping] = useState(true);
     const [endSleeping, setEndSleeping] = useState(false);
     const [startEnd, setStartEnd] = useState(true);
@@ -42,16 +45,38 @@ const SleepingModal = () => {
 
     const handleShow = () => {
       setShow(true);
-      localStorage.getItem('startSleeping') ? setEndSleeping(true) : setEndSleeping(false)
+      setInfo(true);
+      if(localStorage.getItem('startSleeping')) {
+        setEndSleeping(true)
+        setMainText(false);
+        setSecondText(true);
+      } else {
+        setEndSleeping(false);
+        setMainText(true);
+        setSecondText(false);
       }
+    }
 
       const handleClose = () => {
-        setStartEnd(true);
-        setInputGroup(true);
-        setEndSleeping(false);
-        setStartSleeping(true);
-        setShow(false);
-        localStorage.removeItem('startSleeping')
+        if(localStorage.getItem('infoSleep')) {
+          localStorage.removeItem('infoSleep');
+          setInfoSleeping(false); 
+          setBackInfo(false);
+          if(localStorage.getItem('startSleeping')) {
+            setInfoSleeping(true);
+            setMainSleep(false);
+          } else {
+          setInfoSleeping(false);
+          setMainSleep(true);
+          }
+        } else {
+          setStartEnd(true);
+          setInputGroup(true);
+          setEndSleeping(false);
+          setStartSleeping(true);
+          setShow(false);
+          localStorage.removeItem('startSleeping')
+        }
     }
 
     function millisecToTimeHours(arg) {
@@ -153,6 +178,7 @@ const SleepingModal = () => {
     }
 
     const handleInfoSleep = () => {
+      localStorage.setItem('infoSleep', true);
       setInfo(false);
       setInfoSleeping(true);
       setMainSleep(false);
@@ -160,9 +186,11 @@ const SleepingModal = () => {
     }
 
     const handleBackSleep = () => {
+      localStorage.removeItem('infoSleep');
       setBackInfo(false);
       setInfoSleeping(false);
       setMainSleep(true);
+      setInfo(true);
     }
 
     return (
@@ -183,13 +211,32 @@ const SleepingModal = () => {
           <Modal.Body>
           {mainSleep && (
           <div>
-            Kliknite na dugme 'Spavkanje' i Bebiron ce zabeleziti vreme kada se Vasa beba uspavala, kako biste mogli da pratite statistiku i opste stanje bebinog rezima spavanja.
-            <br />
-            Kliknite na dugme 'Budjenje' kako bi Bebiron zabelezio vreme kada se beba probudila.
-            <br />
-            Ukoliko ne zelite da unosite podatke na klik, mozete upisati vreme spavanja u prozore ispod dugmeta za pocetak spavanja i klikom na dugme 'Zabelezi'.
-            <br />
-            Klikom na dugme Spavkanje ovaj prozor ce se zatvoriti a Bebiron ce u pozadini meriti vreme spavanja Vase bebe.
+            {mainText && (
+              <div>
+                Kliknite na dugme 'Spavkanje' i Bebiron ce zabeleziti vreme kada se Vasa beba uspavala, kako biste mogli da pratite statistiku i opste stanje bebinog rezima spavanja.
+                <br />
+                Kliknite na dugme 'Budjenje' kako bi Bebiron zabelezio vreme kada se beba probudila.
+                <br />
+                Ukoliko ne zelite da unosite podatke na klik, mozete upisati vreme spavanja u prozore ispod dugmeta za pocetak spavanja i klikom na dugme 'Zabelezi'.
+                <br />
+                Klikom na dugme Spavkanje ovaj prozor ce se zatvoriti a Bebiron ce u pozadini meriti vreme spavanja Vase bebe.
+              </div>
+            )}
+            {secondText && (
+              <div>
+                Pazljivo odaberite opcije od ponudjenih:
+                <br />
+                Budjenje - memorisacete vreme budjenja Vase bebe.
+                <br />
+                Nastavak spavanja - kliknite ukoliko ne zelite da prekidate merenje trajanja sna bebe.
+                <br />
+                Nazad - ovo dugme ce obrisati pocetak spavanja i vratiti Vas na pocetni prozor modula za upisivanje vremena spavanja. Uneti podaci nece biti memorisani (proteklo vreme spavanja).
+                <br />
+                Info - pruzice Vam informacije o rezimu spavanja Vase bebe.
+                <br />
+                Zatvoriti - ovo dugme ce obrisati pocetak spavanja i zatoriti prozor 'Spavkanje'.
+              </div>
+            )}
             {startEnd && (
             <div>
             {startSleeping && (
@@ -200,7 +247,7 @@ const SleepingModal = () => {
             {localStorage.getItem('startSleeping') && (
             <div>
               <div>
-              spavanje od: {`${new Date(JSON.parse(localStorage.getItem('startSleeping'))).getHours()}h : ${new Date(JSON.parse(localStorage.getItem('startSleeping'))).getMinutes()}min, trajanje sna: ${millisecToTimeHours(Date.now() - JSON.parse(localStorage.getItem('startSleeping')))}`}
+              <b>spavanje od: {`${new Date(JSON.parse(localStorage.getItem('startSleeping'))).getHours()}h : ${new Date(JSON.parse(localStorage.getItem('startSleeping'))).getMinutes()}min, trajanje sna: ${millisecToTimeHours(Date.now() - JSON.parse(localStorage.getItem('startSleeping')))}`}</b>
               </div>
 
                 <div>
@@ -261,7 +308,7 @@ const SleepingModal = () => {
               Info
             </Button>
           )}
-          {(backInfo && 
+          {backInfo && (
               <Button variant="secondary" onClick={handleBackSleep}>
                 Nazad
               </Button>
