@@ -8,8 +8,8 @@ import { Navbar,
          Container,
          Row
 } from 'react-bootstrap';
-import Registration from '../registration/Registration';
-import Login from '../login/Login';
+import Registration from '../landing/registration/Registration';
+import Login from '../landing/login/Login';
 import Auth from './Auth';
 
 import '../../App.css';

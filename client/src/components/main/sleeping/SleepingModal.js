@@ -6,7 +6,7 @@ import {
     InputGroup, 
 } from 'react-bootstrap';
 import axios from 'axios';
-import poop from '../../icons/sleeping.svg';
+import poop from '../../../icons/sleeping.svg';
 import SleepingInfo from './SleepingInfo';
 import { ToastProvider, useToasts } from 'react-toast-notifications';
 import Toast from 'light-toast';

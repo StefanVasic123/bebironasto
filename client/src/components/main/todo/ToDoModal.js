@@ -5,9 +5,9 @@ import {
     FormControl,
     InputGroup
 } from 'react-bootstrap';
-import diary from '../../icons/diary.svg';
+import diary from '../../../icons/diary.svg';
 import axios from 'axios';
-import '../../App.css';
+import '../../../App.css';
 import { ToastProvider, useToasts } from 'react-toast-notifications';
 import Toast from 'light-toast';
 

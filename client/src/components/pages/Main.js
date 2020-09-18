@@ -3,13 +3,13 @@ import '../../App.css';
 import bottle from '../../icons/milk-bottle.svg';
 import sleep from '../../icons/sleeping.svg';
 import todo from '../../icons/diary.svg';
-import RelieveModal from '../relieve/RelieveModal';
-import EatingModal from '../eating/EatingModal';
-import RelieveInfo from '../relieve/RelieveInfo';
-import EatingInfo from '../eating/EatingInfo';
-import SleepingModal from '../sleeping/SleepingModal';
-import SleepingInfo from '../sleeping/SleepingInfo';
-import ToDoModal from '../todo/ToDoModal';
+import RelieveModal from '../main/relieve/RelieveModal';
+import EatingModal from '../main/eating/EatingModal';
+import RelieveInfo from '../main/relieve/RelieveInfo';
+import EatingInfo from '../main/eating/EatingInfo';
+import SleepingModal from '../main/sleeping/SleepingModal';
+import SleepingInfo from '../main/sleeping/SleepingInfo';
+import ToDoModal from '../main/todo/ToDoModal';
 import { ToastProvider, useToasts } from 'react-toast-notifications';
 
 const Main = () => {

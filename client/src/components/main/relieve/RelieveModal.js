@@ -7,8 +7,8 @@ import {
 } from 'react-bootstrap';
 import RelieveInfo from './RelieveInfo';
 import axios from 'axios';
-import poop from '../../icons/diaper.svg';
-import '../../App.css';
+import poop from '../../../icons/diaper.svg';
+import '../../../App.css';
 import { ToastProvider, useToasts } from 'react-toast-notifications';
 import Toast from 'light-toast';
 

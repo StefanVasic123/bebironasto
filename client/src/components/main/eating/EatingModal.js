@@ -6,8 +6,8 @@ import {
     FormControl
 } from 'react-bootstrap';
 import axios from 'axios';
-import bottle from '../../icons/milk-bottle.svg'
-import '../../App.css';
+import bottle from '../../../icons/milk-bottle.svg'
+import '../../../App.css';
 import EatingInfo from './EatingInfo';
 import { ToastProvider, useToasts } from 'react-toast-notifications';
 import Toast from 'light-toast';

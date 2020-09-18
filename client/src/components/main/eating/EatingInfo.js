@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, FormControl, InputGroup, Button } from 'react-bootstrap';
 import axios from 'axios';
-import '../../App.css';
+import '../../../App.css';
 
 const EatingInfo = () => {
     const [passedTime, setPassedTime] = useState("");

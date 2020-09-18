@@ -160,4 +160,12 @@ body {
       display: flex;
       justify-content: space-between;
     }
+
+    /* Info */
+    .sub-header-module {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      padding: 0.4em 0;
+    }
 }

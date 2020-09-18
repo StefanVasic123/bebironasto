@@ -5,7 +5,7 @@ import {
     InputGroup,
     FormControl
 } from 'react-bootstrap';
-import '../../App.css';
+import '../../../App.css';
 
 const SleepingInfo = () => {
     const [passedSleepingTime, setPassedSleepingTime] = useState('');
