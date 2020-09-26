@@ -157,7 +157,7 @@ function EatingModal() {
       .then(res => {
         console.log(res.data);
       // local storage
-      if(res.data.map(item => item !== undefined) === null) {
+      if(res.data !== []) {
         localStorage.setItem('startLeftBreast', res.data.startLeftBreast);
         localStorage.setItem('leftStart', res.data.leftStart);
         localStorage.setItem('leftIsFirst', res.data.leftIsFirst);
