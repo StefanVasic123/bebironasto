@@ -4,7 +4,6 @@ const Schema = mongoose.Schema;
 const EatSchema = new Schema({
     userId: {
         type: String,
-        required: true
     },
     startEating: {
         type: String,
@@ -28,32 +27,25 @@ const EatSchema = new Schema({
         type: String
     },
     shortDate: {
-        type: String,
-        required: true
+        type: String
     },
     year: {
-        type: Number,
-        required: true
+        type: Number
     },
     month: {
-        type: Number,
-        required: true
+        type: Number
     },
     day: {
-        type: Number,
-        required: true
+        type: Number
     },
     hours: {
-        type: Number,
-        required: true
+        type: Number
     },
     minutes: {
-        type: Number,
-        required: true
+        type: Number
     },
     mealDuration: {
-        type: Number,
-        required: true
+        type: Number
     }, 
     rightBreastDuration: {
         type: Number,
@@ -68,6 +60,51 @@ const EatSchema = new Schema({
         default: 0
     },
     adapted: {
+        type: Boolean
+    },
+    setBreastFeeding: {
+        type: Boolean
+    },
+    setAdaptedFeeding: {
+        type: Boolean
+    },
+    leftStart: {
+        type: Boolean
+    },
+    leftIsFirst: {
+        type: Boolean
+    },
+    setRightBreastBtnStart: {
+        type: Boolean
+    },
+    setLeftBreastBtnStart: {
+        type: Boolean
+    },
+    setLeftBreastBtnOver: {
+        type: Boolean
+    },
+    setEndBtn: {
+        type: Boolean
+    },
+    setStartBtn: {
+        type: Boolean
+    },
+    setBackEating: {
+        type: Boolean
+    },
+    stateEating: {
+        type: Boolean
+    },
+    leftEnd: {
+        type: Boolean
+    },
+    rightStart: {
+        type: Boolean
+    },
+    rightIsFirst: {
+        type: Boolean
+    },
+    rightEnd: {
         type: Boolean
     },
     date: {

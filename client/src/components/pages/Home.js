@@ -17,7 +17,9 @@ const Home = (props) => {
             <Nav.Link onClick={() => {
               Auth.logout(() => {
                 props.history.push("/")
-              })
+              });
+              localStorage.removeItem('userId');
+              localStorage.removeItem('token');
             }}>Logout
             </Nav.Link>
           </Nav>        

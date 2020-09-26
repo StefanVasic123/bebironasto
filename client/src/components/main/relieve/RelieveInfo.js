@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Form, FormControl, InputGroup, Button } from 'react-bootstrap';
 import axios from 'axios';
+import '../../../App.css';
+import { ToastProvider, useToasts } from 'react-toast-notifications';
+import Toast from 'light-toast';
 
     function millisecToTime(arg) {
         let seconds = (arg / 1000) % 60;
@@ -44,6 +47,8 @@ const Day = () => {
     const [relievesLength, setRelievesLength] = useState([]);
     const [relievesDayRow, setRelievesDayRow] = useState(false);
     const [relieveIntervalDuration, setRelieveIntervalDuration] = useState([]);
+    const { addToast } = useToasts();
+
     // Get data for specific day - interval between two actions
     async function getDay() {
         await axios.post('/api/relieve/findDay', { 
@@ -61,12 +66,26 @@ const Day = () => {
                  let first = relieveDurationAll.shift();
                  let last = relieveDurationAll.pop();
                  let relieveLengthAll = res.data.map(item => item.act).length;
-                 setRelieveIntervalDuration(relieveLengthAll > 2 ? (last - first) / relieveLengthAll : last - first);
+                 if(relieveLengthAll <= 1) {
+                     setRelieveIntervalDuration(0)
+                 } else {
+                    setRelieveIntervalDuration(relieveLengthAll > 2 ? (last - first) / relieveLengthAll : last - first);
+                 }
              })
              .catch(err => console.log(err))
     }
     const handleRemoveDay = () => {
         setRelievesDayRow(false);
+     }
+
+     const removeRelieve = ({ index }) => {
+        let removeItem = relieves[index]._id
+        axios.delete(`/api/relieve/${removeItem}`)
+        .then(res => {
+          setRelieves(relieves.filter(item => item !== relieves[index]));
+          Toast.success('Obrisano', 500)
+        })
+        .catch(err => alert(err))
      }
      
      const relievesList = () => {
@@ -108,6 +127,7 @@ const Day = () => {
             Broj stolica: {relieves.length}
         </div>
     {relieves.map((relieve, index) => (
+    <div className="relieves-days-row">
         <div>
             <div style={{ textDecoration: "none", listStyleType: "none" }}>
                 <li key={index} index={index}>
@@ -116,6 +136,10 @@ const Day = () => {
                 <p>{relieve.description}</p>
             </div>
         </div>
+        <div>
+            <Button variant="outline-danger" onClick={() => removeRelieve({ index })}>Izbrisi</Button>
+        </div>
+    </div>
     ))}
     <div>
         <p>
@@ -160,9 +184,13 @@ const Month = () => {
             let first = relieveMonthDurationAll.shift();
             let last = relieveMonthDurationAll.pop();
             let relieveMonthLengthAll = res.data.map(item => item.act).length;
-            setRelieveMonthIntervalDuration((last - first) / relieveMonthLengthAll);
+            if(relieveMonthLengthAll <= 1) {
+                setRelieveMonthIntervalDuration(0)
+            } else {
+               setRelieveMonthIntervalDuration(relieveMonthLengthAll > 2 ? (last - first) / relieveMonthLengthAll : last - first);
+            }
         })
-        .catch(err => console.log(err))
+        .catch(err => alert(err))
     }
 
     const handleRemoveMonth = () => {
@@ -270,7 +298,7 @@ const Period = () => {
             let relievePeriodLengthAll = res.data.map(item => item.act).length;
             setRelievePeriodIntervalDuration((last - first) / relievePeriodLengthAll);
         })
-        .catch(err => console.log(err)) 
+        .catch(err => alert(err)) 
      }
 
      const handleRemovePeriod = () => {
@@ -489,7 +517,9 @@ const RelieveInfo = () => {
                 </div>
             </div>
 
+        <ToastProvider>
             <Day />
+        </ToastProvider>
             
             <Month />
 

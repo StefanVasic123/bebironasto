@@ -47,7 +47,7 @@ const Main = () => {
             </div>
             <div className="row">
                 <div className="row-img">
-                        <ToDoModal />
+                    <ToDoModal />
                 </div>
                 <div className="row-txt">
                     <p>Podsetnik</p>

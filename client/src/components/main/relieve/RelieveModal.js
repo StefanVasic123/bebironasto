@@ -19,12 +19,16 @@ function RelieveModal() {
     const [regularBody, setRegularBody] = useState(true);
     const [relieveInfoRow, setRelieveInfoRow] = useState(false);
   
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+      setShow(false);
+      setDisabledRelieve(false);
+    }
     const handleShow = () => setShow(true);
 
     const [info, setInfo] = useState(true);
     const [back, setBack] = useState(false);
 
+    const [disabledRelieve, setDisabledRelieve] = useState(false);
     const relieveSubmit = () => {
       let selected = document.getElementById("inputGroupSelect01-relieve");
       let val = selected.options[selected.selectedIndex].text;
@@ -130,7 +134,10 @@ function RelieveModal() {
             <Button variant="secondary" onClick={handleClose}>
               Zatvoriti
             </Button>
-            <Button onClick={relieveSubmit} variant="primary">
+            <Button variant="primary" disabled={disabledRelieve} onClick={() => {
+              relieveSubmit();
+              setDisabledRelieve(true);
+            }}>
               Ukakanko
             </Button>
           </div>

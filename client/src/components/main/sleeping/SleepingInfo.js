@@ -6,8 +6,11 @@ import {
     FormControl
 } from 'react-bootstrap';
 import '../../../App.css';
+import { ToastProvider, useToasts } from 'react-toast-notifications';
+import Toast from 'light-toast';
 
 const SleepingInfo = () => {
+    const { addToast } = useToasts();
     const [passedSleepingTime, setPassedSleepingTime] = useState('');
     const [totalSleepingTime, setTotalSleepingTime] = useState('');
     const [searchDate, setSearchDate] = useState('');
@@ -227,7 +230,17 @@ const SleepingInfo = () => {
         let SleepPeriodDurationLength = res.data.map(item => item.sleepingDuration).length;
         setSleepPeriodIntervalDuration((last - first) / SleepPeriodDurationLength);
     })
-    .catch(err => console.log(err))
+    .catch(err => alert(err))
+ }
+
+ const removeSleep = ({ index }) => {
+    let removeItem = dayTotal[index]._id
+    axios.delete(`/api/sleep/${removeItem}`)
+    .then(res => {
+      setDayTotal(dayTotal.filter(item => item !== dayTotal[index]));
+      Toast.success('Obrisano', 500)
+    })
+    .catch(err => alert(err))
  }
 
     return (
@@ -271,13 +284,16 @@ const SleepingInfo = () => {
         <div>
             {dayTotal.map((item, index) => (
                 <div>
-                    <ul key={index} index={index} style={{ listStyleType: "none", textDecoration: "none" }}>
+                    <ul key={index} style={{ listStyleType: "none", textDecoration: "none" }}>
                         <li>
                             trajanje spavanja: {millisecToTimeHours(item.sleepingDuration)}
                         </li>
                         <li>
-                            od-do: {millisecToTimeHoursBlank(item.startSleep) !== 'NaN:NaN' ? `${millisecToTimeHoursBlank(item.startSleep)} - ${millisecToTimeHoursBlank(item.finishSleep)}` : millisecToTimeHoursBlank(item.finishSleep)}
-                        </li>      
+                            od-do: {millisecToTimeHoursBlank(item.startSleep) !== 'Nema informacija' ? `${millisecToTimeHoursBlank(item.startSleep)} - ${millisecToTimeHoursBlank(item.finishSleep)}` : millisecToTimeHoursBlank(item.finishSleep)}
+                        </li> 
+                        <div style={{ textAlign: "right" }}>
+                            <Button variant="outline-danger" onClick={() => removeSleep({ index })}>Izbrisi</Button>
+                        </div>     
                         <hr />                  
                     </ul>
                 </div>

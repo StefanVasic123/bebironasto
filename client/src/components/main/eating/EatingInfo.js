@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { Form, FormControl, InputGroup, Button } from 'react-bootstrap';
 import axios from 'axios';
 import '../../../App.css';
+import { ToastProvider, useToasts } from 'react-toast-notifications';
+import Toast from 'light-toast';
 
 const EatingInfo = () => {
+    const { addToast } = useToasts();
     const [passedTime, setPassedTime] = useState("");
     const [eatingNmb, setEatingNmb] = useState([]);
     const [lastEat, setLastEat] = useState(false);
@@ -152,10 +155,10 @@ const EatingInfo = () => {
              shortDate: searchDate,
          })
          .then(res => { 
-             setMealToday(res.data.map(item => item.mealDuration).filter(item => item !== undefined && item > 0).reduce((a, b) => a + b));
-             setDaysRight(res.data.map(item => item.rightBreastDuration).filter(item => item !== undefined && item > 0).reduce((a, b) => a + b));
-             setDaysLeft(res.data.map(item => item.leftBreastDuration).filter(item => item !== undefined && item > 0).reduce((a, b) => a + b));
-             setAdaptedToday(res.data.map(item => item.adaptedQuantity).filter(item => item !== undefined && item > 0).reduce((a, b) => a + b));
+             setMealToday(res.data.map(item => item.mealDuration).filter(item => item !== undefined).reduce((a, b) => a + b));
+             setDaysRight(res.data.map(item => item.rightBreastDuration).filter(item => item !== undefined).reduce((a, b) => a + b));
+             setDaysLeft(res.data.map(item => item.leftBreastDuration).filter(item => item !== undefined).reduce((a, b) => a + b));
+             setAdaptedToday(res.data.map(item => item.adaptedQuantity).filter(item => item !== undefined).reduce((a, b) => a + b));
              setBreastDaysRow(true);
              })
          .catch(err => alert(err))
@@ -171,10 +174,10 @@ const EatingInfo = () => {
             month: b
         })
         .then(res => {
-            setMonthRight(res.data.map(item => item.rightBreastDuration).filter(item => item !== undefined && item > 0).reduce((a, b) => a + b));
-            setMonthLeft(res.data.map(item => item.leftBreastDuration).filter(item => item !== undefined && item > 0).reduce((a, b) => a + b));
-            setMonthAll(res.data.map(item => item.mealDuration).filter(item => item !== undefined && item > 0).reduce((a, b) => a + b));
-            setAdaptedMonthAll(res.data.map(item => item.adaptedQuantity).filter(item => item !== undefined && item > 0).reduce((a, b) => a + b));
+            setMonthRight(res.data.map(item => item.rightBreastDuration).filter(item => item !== undefined).reduce((a, b) => a + b));
+            setMonthLeft(res.data.map(item => item.leftBreastDuration).filter(item => item !== undefined).reduce((a, b) => a + b));
+            setMonthAll(res.data.map(item => item.mealDuration).filter(item => item !== undefined).reduce((a, b) => a + b));
+            setAdaptedMonthAll(res.data.map(item => item.adaptedQuantity).filter(item => item !== undefined).reduce((a, b) => a + b));
             setBreastMonthsRow(true);
         })
         .catch(err => console.log(err))
@@ -201,13 +204,13 @@ const EatingInfo = () => {
            day: selectedDays()
        })
        .then(res => {
-        setPeriodRight(res.data.map(item => item.rightBreastDuration).filter(item => item !== undefined && item > 0).reduce((a, b) => a + b));
-        setPeriodLeft(res.data.map(item => item.leftBreastDuration).filter(item => item !== undefined && item > 0).reduce((a, b) => a + b));
-        setPeriodAll(res.data.map(item => item.mealDuration).filter(item => item !== undefined && item > 0).reduce((a, b) => a + b));
+        setPeriodRight(res.data.map(item => item.rightBreastDuration).filter(item => item !== undefined).reduce((a, b) => a + b));
+        setPeriodLeft(res.data.map(item => item.leftBreastDuration).filter(item => item !== undefined).reduce((a, b) => a + b));
+        setPeriodAll(res.data.map(item => item.mealDuration).filter(item => item !== undefined).reduce((a, b) => a + b));
         setPeriodAdaptedAll(res.data.map(item => item.adaptedQuantity).reduce((a, b) => a + b));
         setBreastPeriodRow(true)
     })
-       .catch(err => console.log(err)) 
+       .catch(err => alert(err)) 
     }
 
     // Get average data for speific day
@@ -217,7 +220,7 @@ const EatingInfo = () => {
             shortDate: searchDateAverage
         })
         .then(res => { 
-            let mealsDuration = res.data.map(item => item.mealDuration).filter(item => item !== undefined && item > 0).reduce((a, b) => a + b)
+            let mealsDuration = res.data.map(item => item.mealDuration).filter(item => item !== undefined).reduce((a, b) => a + b)
             let mealsLength = res.data.map(item => item.mealDuration).length;
             setMealsAverageDuration(mealsDuration / mealsLength);
             setAverageEating(true);
@@ -232,12 +235,22 @@ const EatingInfo = () => {
             shortDate: searchDateInterval
         })
         .then(res => { 
-            let mealsDurationAll = res.data.map(item => item.endEating).filter(item => item !== undefined && item > 0)
+            let mealsDurationAll = res.data.map(item => item.endEating).filter(item => item !== undefined)
             let first = mealsDurationAll.shift();
             let last = mealsDurationAll.pop();
             let mealsLengthAll = res.data.map(item => item.mealDuration).length;
             setMealsIntervalDuration((last - first) / mealsLengthAll);
             setIntervalEating(true);
+        })
+        .catch(err => alert(err))
+    }
+
+    const removeMeal = ({ index }) => {
+        let removeItem = mealDuration[index]._id
+        axios.delete(`/api/eat/${removeItem}`)
+        .then(res => {
+          setMealDuration(mealDuration.filter(item => item !== mealDuration[index]));
+          Toast.success('Obrisano', 500)
         })
         .catch(err => alert(err))
     }
@@ -282,9 +295,14 @@ const EatingInfo = () => {
             {item.endEating && (
                 <div>
                 <li key={index} index={index}>
+                <div className="eating-days-row">
                     <div>
                         Regularan obrok
                     </div>
+                    <div>
+                        <Button variant="outline-danger" onClick={() => removeMeal({index})}>Izbrisi</Button>
+                    </div>
+                </div>
                     <div>
                         {`vreme: ${item.hours < 10 ? "0" + item.hours : item.hours}:${item.minutes < 10 ? "0" + item.minutes : item.minutes}h`}
                     </div>
@@ -321,7 +339,14 @@ const EatingInfo = () => {
                 )}
                 {item.adapted === false && (
                     <div>
-                    <p>Adaptiran obrok</p>
+                <div className="eating-days-row">
+                    <div>
+                        Adaptiran obrok
+                    </div>
+                    <div>
+                        <Button variant="outline-danger" onClick={() => removeMeal({index})}>Izbrisi</Button>
+                    </div>
+                </div>
                     <p>kolicina: {item.adaptedQuantity}ml</p>
                     <p>vreme: {item.hours < 10 ? "0" + item.hours : item.hours}:{item.minutes < 10 ? "0" + item.minutes : item.minutes}h</p>
                     <p>trajanje: {millisecToTime(item.mealDuration)}</p>

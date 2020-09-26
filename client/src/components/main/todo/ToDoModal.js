@@ -270,8 +270,8 @@ const NoteList = ({
           <li key={index} index={index} >
           <div className="shopping-list-li">
           <Button variant="outline-info" onClick={() => handleNotesText({ index })}>
-            <p>{item.day}.{monthToLetters(item.month)}</p>
-            <p>{item.hours}:{item.minutes}</p>
+            {item.day}.{monthToLetters(item.month)}
+            {item.hours}:{item.minutes}
           </Button>
           <Button variant="outline-danger" onClick={() => removeNotesText({ index })}>
               Izbrisi
@@ -287,12 +287,12 @@ const NoteList = ({
       ))}
     </Modal.Body>
     <Modal.Footer>
-      <Button variant="info" onClick={handleNotesBack}>
-        Nazad
-      </Button>
-      <Button variant="secondary" onClick={handleClose}>
-        Zatvoriti
-      </Button>
+        <Button variant="info" onClick={handleNotesBack}>
+          Nazad
+        </Button>
+        <Button variant="secondary" onClick={handleClose}>
+          Zatvoriti
+        </Button>
     </Modal.Footer>
   </Modal>
   )

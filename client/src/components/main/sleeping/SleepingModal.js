@@ -34,6 +34,7 @@ const SleepingModal = () => {
     const [backInfo, setBackInfo] = useState(false);
     const [backBtn, setBackBtn] = useState(true);
 
+    const [disabledSleeping, setDisabledSleeping] = useState(false);
     useEffect(() => {
         if(localStorage.getItem('startSleeping') !== null) {
             setStartEnd(true);
@@ -251,7 +252,10 @@ const SleepingModal = () => {
               </div>
 
                 <div>
-                <Button onClick={wakingSubmit} variant="primary">
+                <Button disabled={disabledSleeping} onClick={() => {
+                  wakingSubmit();
+                  setDisabledSleeping(true);
+                }} variant="primary">
                     Budjenje
                 </Button>
                 </div>

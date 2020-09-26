@@ -123,6 +123,14 @@ body {
       flex-direction: column;
       justify-content: center;
     }
+    .eating-days-row {
+      display: flex;
+      justify-content: space-between;
+    }
+    .end-eating-breast {
+      display: flex;
+      justify-content: space-between;
+    }
     /* footer */
     .modal-footer-eating {
       display: flex;
@@ -139,6 +147,10 @@ body {
     .two-btns-relieve-info {
       display: flex;
       flex-direction: row;
+      justify-content: space-between;
+    }
+    .relieves-days-row {
+      display: flex;
       justify-content: space-between;
     }
 
@@ -159,9 +171,9 @@ body {
     .shopping-list-li {
       display: flex;
       justify-content: space-between;
+      flex-wrap: wrap;
     }
-
-    /* Info */
+    /* info */
     .sub-header-module {
       display: flex;
       flex-direction: row;

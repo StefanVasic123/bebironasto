@@ -40,6 +40,10 @@ function EatingModal() {
     const [adaptedQuantity, setAdaptedQuantity] = useState("")
     const [info, setInfo] = useState(true);
 
+    const [disabledEnd, setDisabledEnd] = useState(false);
+    const [disabledEndLeft, setDisabledEndLeft] = useState(false);
+    const [disabledEndRight, setDisabledEndRight] = useState(false);
+
     const milliseconds = 2700000;
     function getMonth() {
         let month = new Date().getMonth() + 1;
@@ -109,13 +113,12 @@ function EatingModal() {
     }, [])
     
     const handleClose = () => {
-      if(localStorage.getItem('adaptedFeedingRow')) {
-        setBreastFeeding(false);
-        setAdaptedFeeding(false);
-      } else {
-        setBreastFeeding(true);
-        setAdaptedFeeding(true);
-      }
+      setBreastFeeding(true);
+      setAdaptedFeeding(true);
+      setDisabledEnd(false);
+      setDisabledEndRight(false);
+      setDisabledEndLeft(false);
+      setAdaptedFeedingForm(false);
       setShow(false);
       setStartBtn(false);
       setEndBtn(false);
@@ -129,6 +132,7 @@ function EatingModal() {
       setBack(false);
       setRegularBodyEating(true);
 
+      localStorage.removeItem('stateId');
       localStorage.removeItem('rightIsFirst');
       localStorage.removeItem('leftIsFirst');
       localStorage.removeItem('startEating');
@@ -142,15 +146,53 @@ function EatingModal() {
       localStorage.removeItem('leftStart');
       localStorage.removeItem('leftEnd');
       localStorage.removeItem('startedAdapted');
-      localStorage.removeItem('adaptedFeedingRow');
     }
-    const handleShow = () => setShow(true);
+    const handleShow = async () => {
+      setShow(true);
+      if(window.navigator.onLine) {
+      await axios.post('/api/eat/getState', {
+        "userId": localStorage.getItem('userId'),
+        "stateEating": true
+      })
+      .then(res => {
+        console.log(res.data);
+      // local storage
+      if(res.data.map(item => item !== undefined) === null) {
+        localStorage.setItem('startLeftBreast', res.data.startLeftBreast);
+        localStorage.setItem('leftStart', res.data.leftStart);
+        localStorage.setItem('leftIsFirst', res.data.leftIsFirst);
+        localStorage.setItem('startEating', res.data.startEating);
+        localStorage.setItem('stateId', res.data._id);
+        localStorage.setItem('endLeftBreast', res.data.endLeftBreast);
+        localStorage.setItem('leftEnd', res.data.leftEnd);
+        localStorage.setItem('startRightBreast', res.data.startRightBreast);
+        localStorage.setItem('rightStart', res.data.rightStart);
+        localStorage.setItem('rightIsFirst', res.data.rightIsFirst);
+        localStorage.setItem('endRightBreast', res.data.endRightBreast);
+        localStorage.setItem('rightEnd', res.data.rightEnd);
+
+      // states
+        setBreastFeeding(res.data.setBreastFeeding);
+        setAdaptedFeeding(res.data.setAdaptedFeeding);
+        setRightBreastBtnStart(res.data.setRightBreastBtnStart);
+        setLeftBreastBtnStart(res.data.setLeftBreastBtnStart);
+        setLeftBreastBtnOver(res.data.setLeftBreastBtnOver);
+        setEndBtn(res.data.setEndBtn);
+        setStartBtn(res.data.setStartBtn);
+        setBackEating(res.data.setBackEating);
+        setRightBreastBtnOver(res.data.setRightBreastBtnOver);
+      }
+      })
+      .catch(err => console.log(err)); 
+    } else {
+      alert('Niste na mrezi, podaci nece biti sacuvani dok ponovo ne uspostavite konekciju sa internetom')
+    }
+    }
 
     let isFirstRight = localStorage.getItem('rightIsFirst');
     let isFirstLeft = localStorage.getItem('leftIsFirst');
 
     const handleStartAdaptedFeeding = () => {
-      localStorage.setItem('adaptedFeedingRow', true);
       setAdaptedFeeding(false);
       setBreastFeeding(false);
       setAdaptedFeedingForm(true);
@@ -166,6 +208,7 @@ function EatingModal() {
     }
 
     const insideMeal = () => {
+      // kada je prvi obrok adaptirani onda salje error jer ne moze da uzme sve obroke
       axios.post('/api/eat/thisDay', {
       "userId": localStorage.getItem('userId'),
       "shortDate": `${new Date().getFullYear()}-${getMonth()}-${newDate}`
@@ -175,20 +218,18 @@ function EatingModal() {
       let endEatingLast = res.data[res.data.length - 1];  
       console.log(endEatingLast);
  
-    if(endEatingLast.endEating) {
+    if(endEatingLast !== undefined) {
       if(Date.now() - milliseconds <= endEatingLast.endEating) {
-    //    localStorage.setItem('adaptedBoolean', true);
         console.log("true")
         handleAdaptedFeedingFormEnd(true)
       } else {
-    //    localStorage.setItem('adaptedBoolean', false)
         console.log('false')
         handleAdaptedFeedingFormEnd(false)
       }
     } else {
         handleAdaptedFeedingFormEnd(false)
     }
-  })
+})
     .catch(err => console.log(err))
 }
 
@@ -206,7 +247,7 @@ function EatingModal() {
         "minutes": new Date().getMinutes(),
         "mealDuration": Date.now() - localStorage.getItem('startEating'),
         "adaptedQuantity": adaptedQuantity,
-        "adapted": adapted//localStorage.getItem('adaptedBoolean')
+        "adapted": adapted
       })
       .then(res => {
         console.log(res.data)
@@ -221,7 +262,6 @@ function EatingModal() {
         setAdaptedQuantity("");
 
         localStorage.removeItem('startEating');
-        localStorage.removeItem('adaptedFeedingRow');
         localStorage.removeItem('startedAdapted');
       })
       .catch(err => console.log(err));
@@ -245,6 +285,31 @@ function EatingModal() {
         setBackEating(true);
     }
     const handleRightBreastStart = () => {
+      axios.post('/api/eat/update', {
+      // query
+        "id": localStorage.getItem('stateId'),
+      // default
+        "userId": localStorage.getItem('userId'),
+        "stateEating": true,
+      // new items
+        "startRightBreast": Date.now(), // LS
+        "rightStart": true, // LS
+        "setRightBreastBtnOver": true,
+        "rightIsFirst": isFirstLeft === null ? true : null, // LS
+        "setEndBtn": isFirstLeft ? true : false, 
+        // changed items
+        "setStartBtn": false,
+        "setBackEating": true,
+        "startEating": Date.now(), // LS
+        "setLeftBreastBtnStart": isFirstLeft === null ? false : null,
+        "setRightBreastBtnStart": false
+      })
+      .then(res => {
+        console.log(res);
+        localStorage.setItem('stateId', res.data._id);
+      })
+      .catch(err => console.log(err))
+
       localStorage.setItem('startRightBreast', Date.now());
       localStorage.setItem('rightStart', true); // for useEffect - keep module state
       if(isFirstLeft === null) { 
@@ -263,6 +328,21 @@ function EatingModal() {
       }
     }
     const handleRightBreastOver = () => {
+      axios.post('/api/eat/update', {
+        "id": localStorage.getItem('stateId'),
+      // default
+        "userId": localStorage.getItem('userId'),
+        "stateEating": true,
+      // new items
+        "endRightBreast": Date.now(), // LS
+        "rightEnd": true, // LS
+      // changed items
+        "setRightBreastBtnOver": false,
+        "setLeftBreastBtnStart": true
+      })
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
+
       localStorage.setItem('endRightBreast', Date.now());
       localStorage.removeItem('rightStart');
       localStorage.setItem('rightEnd', true);
@@ -270,6 +350,28 @@ function EatingModal() {
       setLeftBreastBtnStart(true);
     }
     const handleLeftBreastStart = () => {
+      axios.post('/api/eat/state', {
+        "stateEating": true, // LS
+        "userId": localStorage.getItem('userId'), // LS
+        "setBreastFeeding": false,
+        "setAdaptedFeeding": false,
+        "startLeftBreast": Date.now(), // LS
+        "leftStart": true, // LS
+        "leftIsFirst": true, // LS
+        "startEating": Date.now(), // LS
+        "setRightBreastBtnStart": false,
+        "setLeftBreastBtnStart": false,
+        "setLeftBreastBtnOver": true,
+        "setEndBtn": false,
+        "setStartBtn": false,
+        "setBackEating": true
+      })
+      .then(res => {
+        console.log(res.data);
+        localStorage.setItem('stateId', res.data._id);
+      })
+      .catch(err => console.log(err)) 
+
       localStorage.setItem('startLeftBreast', Date.now());
       localStorage.removeItem('rightEnd');
       localStorage.setItem('leftStart', true);
@@ -289,20 +391,51 @@ function EatingModal() {
       }
     }
     const handleLeftBreastOver = () => {
+  /*    axios.post('/api/users/change_name', {
+        'id': localStorage.getItem('userId'), 
+        'name': this.state.newUserName
+})
+        .then(res => console.log(res))   
+        .catch(err => alert("Wrong User Name!"))    
+} */
+       axios.post('/api/eat/update', { 
+        // query
+          "id": localStorage.getItem('stateId'),
+        // default
+          "userId": localStorage.getItem('userId'),
+          "stateEating": true,
+        // new items
+          "endLeftBreast": Date.now(), // LS
+          "leftEnd": true, // LS
+        // changed items
+          "leftStart": false, // LS
+          "setLeftBreastBtnOver": false, // state
+          "setRightBreastBtnStart": true, // state
+      })
+        .then(res => {
+          console.log(res.data);
+        })
+        .catch(err => console.log(err))
+
       localStorage.setItem('endLeftBreast', Date.now());
       localStorage.removeItem('leftStart');
       localStorage.setItem('leftEnd', true);
       setLeftBreastBtnOver(false);
       setRightBreastBtnStart(true);
     }
-    const handleEnd = () => {
+    const handleEnd = async (arg) => {
+      const id = localStorage.getItem('stateId');
+      axios.delete(`/api/eat/${id}`).then(res => console.log(res)).catch(err => console.log(err));
+
       localStorage.removeItem('rightEnd');
       localStorage.removeItem('leftEnd');
-      if(isFirstRight) {
-        localStorage.setItem('endLeftBreast', Date.now())
-      }
-      if(isFirstLeft) {
-        localStorage.setItem('endRightBreast', Date.now())
+      if(arg) {
+        if(isFirstRight) {
+          localStorage.setItem('endLeftBreast', Date.now())
+        }
+        if(isFirstLeft) {
+          localStorage.setItem('endRightBreast', Date.now())
+        }
       }
       function getMonth() {
         let month = new Date().getMonth() + 1;
@@ -315,7 +448,7 @@ function EatingModal() {
 
       const newDate = new Date().getDate() < 10 ? "0" + new Date().getDate() : new Date().getDate();
 
-     axios.post('/api/eat', {
+     await axios.post('/api/eat', {
         "userId": localStorage.getItem('userId'),
         "startEating": localStorage.getItem('startEating'),
         "endEating": Date.now(),
@@ -334,6 +467,7 @@ function EatingModal() {
         "leftBreastDuration": localStorage.getItem('endLeftBreast') - localStorage.getItem('startLeftBreast')
       })
       .then(res => {
+        localStorage.removeItem('stateId');
         localStorage.removeItem('rightIsFirst');
         localStorage.removeItem('leftIsFirst');
         localStorage.removeItem('startEating');
@@ -348,6 +482,9 @@ function EatingModal() {
         localStorage.removeItem('leftEnd');
         localStorage.removeItem('startedAdapted');
         
+        setDisabledEnd(false);
+        setDisabledEndRight(false);
+        setDisabledEndLeft(false);
         setShow(false);
         setStartBtn(false);
         setEndBtn(false);
@@ -361,17 +498,11 @@ function EatingModal() {
         setAdaptedQuantity("");
         Toast.success('Uspesno', 500)
         addToast('Uspesno memorisan obrok', { appearance: 'success', autoDismiss: true, autoDismissTimeout: 10000 })
+        console.log(res.data)
       })
       .catch(err => console.log(err))  
-
-
- /*     axios.get('/api/eat/find', {
-        "userId": localStorage.getItem('userId')
-      })
-      .then(res => res.data.filter(item => item.userId === localStorage.getItem('userId')).map(date => date.end).forEach(now => console.log(new Date(JSON.parse(now)))))
-      .catch(err => console.log(err)) */
-      
     }  
+    
     const handleBackEating = () => {
       setShow(false);
     } 
@@ -442,7 +573,7 @@ function EatingModal() {
               </Button>
             )}
             </div>
-            {(adaptedFeedingForm || (localStorage.getItem('startedAdapted') === true)) && (
+            {adaptedFeedingForm && (
               <InputGroup className="mb-3">
                 <FormControl
                   type="number"
@@ -471,7 +602,11 @@ function EatingModal() {
             </Button>
             )}
             {endBtn && (
-            <Button variant="info" onClick={handleEnd} className="end-btn-eating">
+            <Button variant="info" className="end-btn-eating" disabled={disabledEnd} onClick={() => {
+              handleEnd(true);
+              setDisabledEnd(true);
+            }}
+            >
               Kraj
             </Button>
             )}
@@ -480,24 +615,55 @@ function EatingModal() {
           <div className="eating-breast-inside">
             <div className="right-left-breast">
             {leftBreastBtnStart && (
-            <Button variant="outline-info" onClick={handleLeftBreastStart}>
-              Zapocni levu dojku
-            </Button>
+                <Button variant="outline-info" onClick={handleLeftBreastStart}>
+                  Zapocni levu dojku
+                </Button>
             )}
             {leftBreastBtnOver && (
-            <Button variant="outline-info" onClick={handleLeftBreastOver}>
-              Zavrsi levu dojku
-            </Button>
+            <div className="end-eating-breast">
+              <div>
+              <Button variant="outline-info" onClick={handleLeftBreastOver}>
+                  Zavrsi levu dojku
+              </Button>
+              </div>
+              <div>
+                {localStorage.getItem('leftIsFirst') && (
+                    <Button variant="info" disabled={disabledEndLeft} onClick={() => {
+                      localStorage.setItem('endLeftBreast', Date.now());
+                      handleEnd(false);
+                      setDisabledEndLeft(true);
+                    }}>
+                      Zavrsi dojenje
+                    </Button>
+                )}
+              </div>
+            </div>
             )}
             {rightBreastBtnStart && ( 
-            <Button variant="outline-info" onClick={handleRightBreastStart}>
-              Zapocni desnu dojku
-            </Button>
+              <Button variant="outline-info" onClick={handleRightBreastStart}>
+                Zapocni desnu dojku
+              </Button>
+            
             )}
             {rightBreastBtnOver && (
-            <Button variant="outline-info" onClick={handleRightBreastOver}>
-              Zavrsi desnu dojku
-            </Button>
+            <div className="end-eating-breast">
+              <div>
+                <Button variant="outline-info" onClick={handleRightBreastOver}>
+                  Zavrsi desnu dojku
+                </Button>
+              </div>
+              <div>
+                {localStorage.getItem('rightIsFirst') && (
+                  <Button variant="info" disabled={disabledEndRight} onClick={() => {
+                    localStorage.setItem('endRightBreast', Date.now());
+                    handleEnd(false);
+                    setDisabledEndRight(true);
+                    }}>
+                      Zavrsi dojenje
+                  </Button>
+                )}
+              </div>
+            </div>
             )}
             </div>
             {backEating && (
