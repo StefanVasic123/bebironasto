@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
     Button,
     Modal,
@@ -64,7 +64,7 @@ function EatingModal() {
       if(localStorage.getItem('startEatingBlank')) {
         setStartBtn(false);
         setEndBtn(true);
-              setBackEating(true);
+        setBackEating(true);
       }
       if(isFirstRight) {
         if(localStorage.getItem('rightStart')) {
@@ -147,47 +147,96 @@ function EatingModal() {
       localStorage.removeItem('leftEnd');
       localStorage.removeItem('startedAdapted');
     }
-    const handleShow = async () => {
-      setShow(true);
-      if(window.navigator.onLine) {
-      await axios.post('/api/eat/getState', {
+
+    const fetchData = useCallback(() => {
+      axios.post('/api/eat/getState', {
         "userId": localStorage.getItem('userId'),
         "stateEating": true
       })
       .then(res => {
+        console.log(res.data.map(item => item).map(data => data.startLeftBreast));
+        console.log(res.data.map(item => item).map(data => data.setBreastFeeding));
+        console.log(res.data.map(item => item).map(data => data.setEndBtn));
         console.log(res.data);
       // local storage
-      if(res.data !== []) {
-        localStorage.setItem('startLeftBreast', res.data.startLeftBreast);
-        localStorage.setItem('leftStart', res.data.leftStart);
-        localStorage.setItem('leftIsFirst', res.data.leftIsFirst);
-        localStorage.setItem('startEating', res.data.startEating);
-        localStorage.setItem('stateId', res.data._id);
-        localStorage.setItem('endLeftBreast', res.data.endLeftBreast);
-        localStorage.setItem('leftEnd', res.data.leftEnd);
-        localStorage.setItem('startRightBreast', res.data.startRightBreast);
-        localStorage.setItem('rightStart', res.data.rightStart);
-        localStorage.setItem('rightIsFirst', res.data.rightIsFirst);
-        localStorage.setItem('endRightBreast', res.data.endRightBreast);
-        localStorage.setItem('rightEnd', res.data.rightEnd);
-
+      if(res.data.length !== 0) {
+        localStorage.setItem('startLeftBreast', res.data.map(item => item).map(data => data.startLeftBreast));
+        localStorage.setItem('leftStart', res.data.map(item => item).map(data => data.leftStart));
+        localStorage.setItem('leftIsFirst', res.data.map(item => item).map(data => data.leftIsFirst));
+        localStorage.setItem('startEating', res.data.map(item => item).map(data => data.startEating));
+        localStorage.setItem('stateId', res.data.map(item => item).map(data => data.stateId));
+        localStorage.setItem('endLeftBreast', res.data.map(item => item).map(data => data.endLeftBreast));
+        localStorage.setItem('leftEnd', res.data.map(item => item).map(data => data.leftEnd));
+        localStorage.setItem('startRightBreast', res.data.map(item => item).map(data => data.startRightBreast));
+        localStorage.setItem('rightStart', res.data.map(item => item).map(data => data.rightStart));
+        localStorage.setItem('rightIsFirst', res.data.map(item => item).map(data => data.rightIsFirst));
+        localStorage.setItem('endRightBreast', res.data.map(item => item).map(data => data.endRightBreast));
+        localStorage.setItem('rightEnd', res.data.map(item => item).map(data => data.rightEnd));
+  
       // states
-        setBreastFeeding(res.data.setBreastFeeding);
-        setAdaptedFeeding(res.data.setAdaptedFeeding);
-        setRightBreastBtnStart(res.data.setRightBreastBtnStart);
-        setLeftBreastBtnStart(res.data.setLeftBreastBtnStart);
-        setLeftBreastBtnOver(res.data.setLeftBreastBtnOver);
-        setEndBtn(res.data.setEndBtn);
-        setStartBtn(res.data.setStartBtn);
-        setBackEating(res.data.setBackEating);
-        setRightBreastBtnOver(res.data.setRightBreastBtnOver);
+      //  breastFeedingString = res.data.map(item => item).filter(data => data.setBreastFeeding).toString();
+        setBreastFeeding(res.data.map(item => item).filter(data => data.setBreastFeeding).toString());
+        setAdaptedFeeding(res.data.map(item => item).filter(data => data.setAdaptedFeeding).toString());
+        setRightBreastBtnStart(res.data.map(item => item).filter(data => data.setRightBreastBtnStart).toString());
+        setLeftBreastBtnStart(res.data.map(item => item).filter(data => data.setLeftBreastBtnStart).toString());
+        setLeftBreastBtnOver(res.data.map(item => item).filter(data => data.setLeftBreastBtnOver).toString());
+        setEndBtn(res.data.map(item => item).filter(data => data.setEndBtn).toString());
+        setStartBtn(res.data.map(item => item).filter(data => data.setStartBtn).toString());
+        setBackEating(res.data.map(item => item).filter(data => data.setBackEating).toString());
+        setRightBreastBtnOver(res.data.map(item => item).filter(data => data.setRightBreastBtnOver).toString()); 
       }
+    })
+      .catch(err => console.log(err));
+    }, [])
+
+    const handleShow = () => {
+      setShow(true);
+/*      axios.post('/api/eat/getState', {
+        "userId": localStorage.getItem('userId'),
+        "stateEating": true
       })
-      .catch(err => console.log(err)); 
-    } else {
-      alert('Niste na mrezi, podaci nece biti sacuvani dok ponovo ne uspostavite konekciju sa internetom')
-    }
-    }
+      .then(res => {
+        console.log(res.data.map(item => item).map(data => data.startLeftBreast));
+        console.log(res.data.map(item => item).map(data => data.setBreastFeeding));
+        console.log(res.data.map(item => item).map(data => data.setEndBtn));
+        console.log(res.data);
+      // local storage
+      if(res.data.length !== 0) {
+        localStorage.setItem('startLeftBreast', res.data.map(item => item).map(data => data.startLeftBreast));
+        localStorage.setItem('leftStart', res.data.map(item => item).map(data => data.leftStart));
+        localStorage.setItem('leftIsFirst', res.data.map(item => item).map(data => data.leftIsFirst));
+        localStorage.setItem('startEating', res.data.map(item => item).map(data => data.startEating));
+        localStorage.setItem('stateId', res.data.map(item => item).map(data => data.stateId));
+        localStorage.setItem('endLeftBreast', res.data.map(item => item).map(data => data.endLeftBreast));
+        localStorage.setItem('leftEnd', res.data.map(item => item).map(data => data.leftEnd));
+        localStorage.setItem('startRightBreast', res.data.map(item => item).map(data => data.startRightBreast));
+        localStorage.setItem('rightStart', res.data.map(item => item).map(data => data.rightStart));
+        localStorage.setItem('rightIsFirst', res.data.map(item => item).map(data => data.rightIsFirst));
+        localStorage.setItem('endRightBreast', res.data.map(item => item).map(data => data.endRightBreast));
+        localStorage.setItem('rightEnd', res.data.map(item => item).map(data => data.rightEnd));
+  
+      // states
+        setBreastFeeding(res.data.map(item => item).map(data => data.setBreastFeeding));
+        setAdaptedFeeding(res.data.map(item => item).map(data => data.setAdaptedFeeding));
+        setRightBreastBtnStart(res.data.map(item => item).map(data => data.setRightBreastBtnStart));
+        setLeftBreastBtnStart(res.data.map(item => item).map(data => data.setLeftBreastBtnStart));
+        setLeftBreastBtnOver(res.data.map(item => item).map(data => data.setLeftBreastBtnOver));
+        setEndBtn(res.data.map(item => item).map(data => data.setEndBtn));
+        setStartBtn(res.data.map(item => item).map(data => data.setStartBtn));
+        setBackEating(res.data.map(item => item).map(data => data.setBackEating));
+        setRightBreastBtnOver(res.data.map(item => item).map(data => data.setRightBreastBtnOver));
+      }
+    })
+      .catch(err => console.log(err)); */
+}
+
+ useEffect(() => {
+  if(show === true) {
+    fetchData()
+  } else {
+    console.log(show)
+  }
+}, [fetchData]) // entry point of changing state 
 
     let isFirstRight = localStorage.getItem('rightIsFirst');
     let isFirstLeft = localStorage.getItem('leftIsFirst');
@@ -522,7 +571,10 @@ function EatingModal() {
   
     return (
       <>
-        <Button variant="link" onClick={handleShow}>
+        <Button variant="link" onClick={() => {
+          handleShow();
+          fetchData();
+        }}>
           <img src={bottle} alt="babypoop" height="100em" width="100em" />
         </Button>
   
