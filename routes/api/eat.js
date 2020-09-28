@@ -139,11 +139,10 @@ router.post('/getState', (req, res) => {
 
 // Find and replace current state
 router.post('/update', (req, res) => {
-    Eat.findOneAndUpdate({ stateId: req.body.stateId },
+    Eat.findOneAndUpdate({ userId: req.body.userId, stateEating: req.body.stateEating },
         { $set: {
         userId: req.body.userId,
         stateEating: req.body.stateEating,
-        stateId: req.body.stateId,
         setBreastFeeding: req.body.setBreastFeeding,
         setAdaptedFeeding: req.body.setAdaptedFeeding,
         setLeftBreast: req.body.setLeftBreast,
@@ -164,7 +163,7 @@ router.post('/update', (req, res) => {
 
 // Find and replace current state (if right is clicked after left)
 router.post('/updateRight', (req, res) => {
-    Eat.findOneAndUpdate({ _id: req.body.stateId },
+    Eat.findOneAndUpdate({ userId: req.body.userId, stateEating: req.body.stateEating },
         { $set: {
         userId: req.body.userId,
         stateEating: req.body.stateEating,
@@ -184,7 +183,7 @@ router.post('/updateRight', (req, res) => {
 
 // Find and replace current state (if left is clicked after right)
 router.post('/updateLeft', (req, res) => {
-    Eat.findOneAndUpdate({ _id: req.body.stateId },
+    Eat.findOneAndUpdate({userId: req.body.userId, stateEating: req.body.stateEating },
         { $set: {
         userId: req.body.userId,
         stateEating: req.body.stateEating,
@@ -203,11 +202,10 @@ router.post('/updateLeft', (req, res) => {
 
 // Find and replace current state of second left button
 router.post('/updateLeftEnd', (req, res) => {
-    Eat.findOneAndUpdate({ _id: req.body.stateId },
+    Eat.findOneAndUpdate({ userId: req.body.userId, stateEating: req.body.stateEating },
         { $set: {
         userId: req.body.userId,
         stateEating: req.body.stateEating,
-        stateId: req.body.stateId,
         endLeftBreast: req.body.endLeftBreast,
         leftEnd: req.body.leftEnd,
         leftStart: req.body.leftStart,
@@ -222,11 +220,10 @@ router.post('/updateLeftEnd', (req, res) => {
 
 // Find and replace current state of second right button
 router.post('/updateRightEnd', (req, res) => {
-    Eat.findOneAndUpdate({ _id: req.body.stateId },
+    Eat.findOneAndUpdate({ userId: req.body.userId, stateEating: req.body.stateEating },
         { $set: {
         userId: req.body.userId,
         stateEating: req.body.stateEating,
-        stateId: req.body.stateId,
         endRightBreast: req.body.endRightBreast,
         rightEnd: req.body.rightEnd,
         rightStart: req.body.rightStart,

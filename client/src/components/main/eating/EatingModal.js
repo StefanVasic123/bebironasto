@@ -131,7 +131,11 @@ function EatingModal() {
       setInfo(true);
       setBack(false);
       setRegularBodyEating(true);
-
+      
+      if(localStorage.getItem('stateId')) {
+        let id = localStorage.getItem('stateId');
+        axios.delete(`/api/eat/${id}`).then(res => console.log(res)).catch(err => console.log(err));
+      }
       localStorage.removeItem('stateId');
       localStorage.removeItem('rightIsFirst');
       localStorage.removeItem('leftIsFirst');
@@ -164,7 +168,7 @@ function EatingModal() {
         localStorage.setItem('leftStart', res.data.map(item => item).map(data => data.leftStart));
         localStorage.setItem('leftIsFirst', res.data.map(item => item).map(data => data.leftIsFirst));
         localStorage.setItem('startEating', res.data.map(item => item).map(data => data.startEating));
-        localStorage.setItem('stateId', res.data.map(item => item).map(data => data.stateId));
+        localStorage.setItem('stateId', res.data.map(item => item).map(data => data._id));
         localStorage.setItem('endLeftBreast', res.data.map(item => item).map(data => data.endLeftBreast));
         localStorage.setItem('leftEnd', res.data.map(item => item).map(data => data.leftEnd));
         localStorage.setItem('startRightBreast', res.data.map(item => item).map(data => data.startRightBreast));
@@ -316,7 +320,6 @@ function EatingModal() {
         })
         .then(res => {
           console.log(res.data);
-          localStorage.setItem('stateId', res.data._id);
         })
         .catch(err => console.log(err)) 
       } else {
@@ -339,7 +342,6 @@ function EatingModal() {
           })
           .then(res => {
             console.log(res.data);
-            localStorage.setItem('stateId', res.data._id);
           })
           .catch(err => console.log(err)) 
       } 
@@ -364,11 +366,8 @@ function EatingModal() {
     const handleRightBreastOver = () => {
       axios.post('/api/eat/updateRightEnd', {
       // query
-        "stateId": localStorage.getItem('stateId'),
-      // default
         "userId": localStorage.getItem('userId'),
         "stateEating": true,
-        "stateId": localStorage.getItem('stateId'),
       // new items
         "endRightBreast": Date.now(), // LS
         "rightEnd": true, // LS
@@ -379,7 +378,6 @@ function EatingModal() {
       })
       .then(res => {
         console.log(res);
-        localStorage.setItem('stateId', res.data._id)
         })
       .catch(err => console.log(err))
 
@@ -410,14 +408,11 @@ function EatingModal() {
         })
         .then(res => {
           console.log(res);
-          localStorage.setItem('stateId', res.data._id);
         })
         .catch(err => console.log(err)) 
       } else {
         axios.post('/api/eat/updateLeft', {
           // query
-            "stateId": localStorage.getItem('stateId'),
-          // default
             "userId": localStorage.getItem('userId'),
             "stateEating": true,
           // new items
@@ -433,7 +428,6 @@ function EatingModal() {
           })
           .then(res => {
             console.log(res);
-            localStorage.setItem('stateId', res.data._id);
           })
           .catch(err => console.log(err)) 
       }
@@ -466,11 +460,8 @@ function EatingModal() {
 } */
        axios.post('/api/eat/updateLeftEnd', {
         // query
-          "stateId": localStorage.getItem('stateId'),  
-        // default
           "userId": localStorage.getItem('userId'),
           "stateEating": true,
-          "stateId": localStorage.getItem('stateId'),
         // new items
           "endLeftBreast": Date.now(), // LS
           "leftEnd": true, // LS
@@ -482,7 +473,6 @@ function EatingModal() {
        })
         .then(res => {
           console.log(res.data);
-          localStorage.setItem('stateId', res.data._id)
         })
         .catch(err => console.log(err))
 
