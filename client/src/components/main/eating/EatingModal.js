@@ -191,43 +191,6 @@ function EatingModal() {
 
     const handleShow = () => {
       setShow(true);
-/*      axios.post('/api/eat/getState', {
-        "userId": localStorage.getItem('userId'),
-        "stateEating": true
-      })
-      .then(res => {
-        console.log(res.data.map(item => item).map(data => data.startLeftBreast));
-        console.log(res.data.map(item => item).map(data => data.setBreastFeeding));
-        console.log(res.data.map(item => item).map(data => data.setEndBtn));
-        console.log(res.data);
-      // local storage
-      if(res.data.length !== 0) {
-        localStorage.setItem('startLeftBreast', res.data.map(item => item).map(data => data.startLeftBreast));
-        localStorage.setItem('leftStart', res.data.map(item => item).map(data => data.leftStart));
-        localStorage.setItem('leftIsFirst', res.data.map(item => item).map(data => data.leftIsFirst));
-        localStorage.setItem('startEating', res.data.map(item => item).map(data => data.startEating));
-        localStorage.setItem('stateId', res.data.map(item => item).map(data => data.stateId));
-        localStorage.setItem('endLeftBreast', res.data.map(item => item).map(data => data.endLeftBreast));
-        localStorage.setItem('leftEnd', res.data.map(item => item).map(data => data.leftEnd));
-        localStorage.setItem('startRightBreast', res.data.map(item => item).map(data => data.startRightBreast));
-        localStorage.setItem('rightStart', res.data.map(item => item).map(data => data.rightStart));
-        localStorage.setItem('rightIsFirst', res.data.map(item => item).map(data => data.rightIsFirst));
-        localStorage.setItem('endRightBreast', res.data.map(item => item).map(data => data.endRightBreast));
-        localStorage.setItem('rightEnd', res.data.map(item => item).map(data => data.rightEnd));
-  
-      // states
-        setBreastFeeding(res.data.map(item => item).map(data => data.setBreastFeeding));
-        setAdaptedFeeding(res.data.map(item => item).map(data => data.setAdaptedFeeding));
-        setRightBreastBtnStart(res.data.map(item => item).map(data => data.setRightBreastBtnStart));
-        setLeftBreastBtnStart(res.data.map(item => item).map(data => data.setLeftBreastBtnStart));
-        setLeftBreastBtnOver(res.data.map(item => item).map(data => data.setLeftBreastBtnOver));
-        setEndBtn(res.data.map(item => item).map(data => data.setEndBtn));
-        setStartBtn(res.data.map(item => item).map(data => data.setStartBtn));
-        setBackEating(res.data.map(item => item).map(data => data.setBackEating));
-        setRightBreastBtnOver(res.data.map(item => item).map(data => data.setRightBreastBtnOver));
-      }
-    })
-      .catch(err => console.log(err)); */
 }
 
  useEffect(() => {
@@ -334,30 +297,52 @@ function EatingModal() {
         setBackEating(true);
     }
     const handleRightBreastStart = () => {
-      axios.post('/api/eat/update', {
-      // query
-        "id": localStorage.getItem('stateId'),
-      // default
-        "userId": localStorage.getItem('userId'),
-        "stateEating": true,
-      // new items
-        "startRightBreast": Date.now(), // LS
-        "rightStart": true, // LS
-        "setRightBreastBtnOver": true,
-        "rightIsFirst": isFirstLeft === null ? true : null, // LS
-        "setEndBtn": isFirstLeft ? true : false, 
-        // changed items
-        "setStartBtn": false,
-        "setBackEating": true,
-        "startEating": Date.now(), // LS
-        "setLeftBreastBtnStart": isFirstLeft === null ? false : null,
-        "setRightBreastBtnStart": false
-      })
-      .then(res => {
-        console.log(res);
-        localStorage.setItem('stateId', res.data._id);
-      })
-      .catch(err => console.log(err))
+      if(isFirstLeft === null) {
+        axios.post('/api/eat/stateRight', {
+          "stateEating": true, // LS
+          "userId": localStorage.getItem('userId'), // LS
+          "setBreastFeeding": false,
+          "setAdaptedFeeding": false,
+          "startRightBreast": Date.now(), // LS
+          "rightStart": true, // LS
+          "rightIsFirst": true, // LS
+          "startEating": Date.now(), // LS
+          "setLeftBreastBtnStart": false,
+          "setRightBreastBtnStart": false,
+          "setRightBreastBtnOver": true,
+          "setEndBtn": false,
+          "setStartBtn": false,
+          "setBackEating": true
+        })
+        .then(res => {
+          console.log(res.data);
+          localStorage.setItem('stateId', res.data._id);
+        })
+        .catch(err => console.log(err)) 
+      } else {
+
+        axios.post('/api/eat/updateRight', {
+          // query
+            "stateId": localStorage.getItem('stateId'),
+          // default
+            "userId": localStorage.getItem('userId'),
+            "stateEating": true,
+          // new items
+            "startRightBreast": Date.now(), // LS w
+            "rightIsFirst": null, // LS w
+            "setEndBtn": true, // w
+            // changed items
+            "setStartBtn": false, // w
+            "setBackEating": true, // w
+            "setRightBreastBtnStart": false,
+            "rightEnd": false
+          })
+          .then(res => {
+            console.log(res.data);
+            localStorage.setItem('stateId', res.data._id);
+          })
+          .catch(err => console.log(err)) 
+      } 
 
       localStorage.setItem('startRightBreast', Date.now());
       localStorage.setItem('rightStart', true); // for useEffect - keep module state
@@ -377,19 +362,25 @@ function EatingModal() {
       }
     }
     const handleRightBreastOver = () => {
-      axios.post('/api/eat/update', {
-        "id": localStorage.getItem('stateId'),
+      axios.post('/api/eat/updateRightEnd', {
+      // query
+        "stateId": localStorage.getItem('stateId'),
       // default
         "userId": localStorage.getItem('userId'),
         "stateEating": true,
+        "stateId": localStorage.getItem('stateId'),
       // new items
         "endRightBreast": Date.now(), // LS
         "rightEnd": true, // LS
       // changed items
+        "rightStart": false,
         "setRightBreastBtnOver": false,
         "setLeftBreastBtnStart": true
       })
-      .then(res => console.log(res))
+      .then(res => {
+        console.log(res);
+        localStorage.setItem('stateId', res.data._id)
+        })
       .catch(err => console.log(err))
 
       localStorage.setItem('endRightBreast', Date.now());
@@ -399,27 +390,53 @@ function EatingModal() {
       setLeftBreastBtnStart(true);
     }
     const handleLeftBreastStart = () => {
-      axios.post('/api/eat/state', {
-        "stateEating": true, // LS
-        "userId": localStorage.getItem('userId'), // LS
-        "setBreastFeeding": false,
-        "setAdaptedFeeding": false,
-        "startLeftBreast": Date.now(), // LS
-        "leftStart": true, // LS
-        "leftIsFirst": true, // LS
-        "startEating": Date.now(), // LS
-        "setRightBreastBtnStart": false,
-        "setLeftBreastBtnStart": false,
-        "setLeftBreastBtnOver": true,
-        "setEndBtn": false,
-        "setStartBtn": false,
-        "setBackEating": true
-      })
-      .then(res => {
-        console.log(res.data);
-        localStorage.setItem('stateId', res.data._id);
-      })
-      .catch(err => console.log(err)) 
+      if (isFirstRight === null) {
+        axios.post('/api/eat/state', {
+          "stateEating": true, // LS
+          "userId": localStorage.getItem('userId'), // LS
+          "setBreastFeeding": false,
+          "setAdaptedFeeding": false,
+          "startLeftBreast": Date.now(), // LS
+          "leftStart": true, // LS
+          "leftIsFirst": true, // LS
+          "startEating": Date.now(), // LS
+          "setRightBreastBtnStart": false,
+          "setLeftBreastBtnStart": false,
+          "setLeftBreastBtnOver": true,
+          "setEndBtn": false,
+          "setStartBtn": false,
+          "setBackEating": true,
+          "stateId": ""
+        })
+        .then(res => {
+          console.log(res);
+          localStorage.setItem('stateId', res.data._id);
+        })
+        .catch(err => console.log(err)) 
+      } else {
+        axios.post('/api/eat/updateLeft', {
+          // query
+            "stateId": localStorage.getItem('stateId'),
+          // default
+            "userId": localStorage.getItem('userId'),
+            "stateEating": true,
+          // new items
+            "startLeftBreast": Date.now(), // LS
+            "leftIsFirst": null, // LS
+            "setEndBtn": true,
+            // changed items
+            "setStartBtn": false,
+            "setBackEating": true,
+            "setRightBreastBtnStart": false,
+            "setLeftBreastBtnStart": false,
+            "leftEnd": false
+          })
+          .then(res => {
+            console.log(res);
+            localStorage.setItem('stateId', res.data._id);
+          })
+          .catch(err => console.log(err)) 
+      }
 
       localStorage.setItem('startLeftBreast', Date.now());
       localStorage.removeItem('rightEnd');
@@ -447,12 +464,13 @@ function EatingModal() {
         .then(res => console.log(res))   
         .catch(err => alert("Wrong User Name!"))    
 } */
-       axios.post('/api/eat/update', { 
+       axios.post('/api/eat/updateLeftEnd', {
         // query
-          "id": localStorage.getItem('stateId'),
+          "stateId": localStorage.getItem('stateId'),  
         // default
           "userId": localStorage.getItem('userId'),
           "stateEating": true,
+          "stateId": localStorage.getItem('stateId'),
         // new items
           "endLeftBreast": Date.now(), // LS
           "leftEnd": true, // LS
@@ -460,9 +478,11 @@ function EatingModal() {
           "leftStart": false, // LS
           "setLeftBreastBtnOver": false, // state
           "setRightBreastBtnStart": true, // state
-      })
+          
+       })
         .then(res => {
           console.log(res.data);
+          localStorage.setItem('stateId', res.data._id)
         })
         .catch(err => console.log(err))
 

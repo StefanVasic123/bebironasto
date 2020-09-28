@@ -62,7 +62,7 @@ router.post('/adapted', (req, res) => {
 
 // Post data for current state
 router.post('/state', (req, res) => {
-    const { stateEating, userId, setBreastFeeding, setAdaptedFeeding, startLeftBreast, leftStart, leftIsFirst, startEating, setRightBreastBtnStart, setLeftBreastBtnStart, setLeftBreastBtnOver, setEndBtn, setStartBtn, setBackEating } = req.body;
+    const { stateEating, userId, setBreastFeeding, setAdaptedFeeding, startLeftBreast, leftStart, leftIsFirst, startEating, setRightBreastBtnStart, setLeftBreastBtnStart, setLeftBreastBtnOver, setEndBtn, setStartBtn, setBackEating, stateId } = req.body;
     const newState = new Eat({
         stateEating,
         userId,
@@ -77,13 +77,38 @@ router.post('/state', (req, res) => {
         setLeftBreastBtnOver, 
         setEndBtn, 
         setStartBtn, 
-        setBackEating
+        setBackEating,
+        stateId
     })
     newState.save()
     .then(item => res.json(item))
     .catch(err => res.status(400).json({ success: false}))
 })
 
+// Post data for current state (if right is first clicked)
+router.post('/stateRight', (req, res) => {
+    const { stateEating, userId, setBreastFeeding, setAdaptedFeeding, startRightBreast, rightStart, rightIsFirst, startEating, setLeftBreastBtnStart, setRightBreastBtnStart, setRightBreastBtnOver, setEndBtn, setStartBtn, setBackEating, stateId } = req.body;
+    const newState = new Eat({
+        stateEating,
+        userId,
+        setBreastFeeding, 
+        setAdaptedFeeding, 
+        startRightBreast, 
+        rightStart, 
+        rightIsFirst, 
+        startEating, 
+        setLeftBreastBtnStart, 
+        setRightBreastBtnStart, 
+        setRightBreastBtnOver, 
+        setEndBtn, 
+        setStartBtn, 
+        setBackEating,
+        stateId
+    })
+    newState.save()
+    .then(item => res.json(item))
+    .catch(err => res.status(400).json({ success: false}))
+})
 // Get data of specific user for specific day
 router.post('/thisDay', (req, res) => {
     Eat.find({ userId: req.body.userId, shortDate: req.body.shortDate }) 
@@ -114,10 +139,11 @@ router.post('/getState', (req, res) => {
 
 // Find and replace current state
 router.post('/update', (req, res) => {
-    Eat.findOneAndUpdate({ _id: req.body.id },
+    Eat.findOneAndUpdate({ stateId: req.body.stateId },
         { $set: {
         userId: req.body.userId,
         stateEating: req.body.stateEating,
+        stateId: req.body.stateId,
         setBreastFeeding: req.body.setBreastFeeding,
         setAdaptedFeeding: req.body.setAdaptedFeeding,
         setLeftBreast: req.body.setLeftBreast,
@@ -136,6 +162,82 @@ router.post('/update', (req, res) => {
         })
 })
 
+// Find and replace current state (if right is clicked after left)
+router.post('/updateRight', (req, res) => {
+    Eat.findOneAndUpdate({ _id: req.body.stateId },
+        { $set: {
+        userId: req.body.userId,
+        stateEating: req.body.stateEating,
+        setRightBreastBtnStart: req.body.setRightBreastBtnStart,
+        rightIsFirst: req.body.rightIsFirst,
+        rightEnd: req.body.rightEnd,
+        setStartBtn: req.body.setStartBtn,
+        setBackEating: req.body.setBackEating,
+        setEndBtn: req.body.setEndBtn,
+        startRightBreast: req.body.startRightBreast
+        }},
+        (err, result) => {
+            if(err) return res.send(err)
+            res.send(result)
+        })
+})
+
+// Find and replace current state (if left is clicked after right)
+router.post('/updateLeft', (req, res) => {
+    Eat.findOneAndUpdate({ _id: req.body.stateId },
+        { $set: {
+        userId: req.body.userId,
+        stateEating: req.body.stateEating,
+        setBreastFeeding: req.body.setBreastFeeding,
+        setAdaptedFeeding: req.body.setAdaptedFeeding,
+        setLeftBreastBtnStart: req.body.setLeftBreastBtnStart,
+        leftIsFirst: req.body.leftIsFirst,
+        setRightBreastBtnStart: req.body.setRightBreastBtnStart,
+        leftEnd: req.body.leftEnd
+        }},
+        (err, result) => {
+            if(err) return res.send(err)
+            res.send(result)
+        })
+})
+
+// Find and replace current state of second left button
+router.post('/updateLeftEnd', (req, res) => {
+    Eat.findOneAndUpdate({ _id: req.body.stateId },
+        { $set: {
+        userId: req.body.userId,
+        stateEating: req.body.stateEating,
+        stateId: req.body.stateId,
+        endLeftBreast: req.body.endLeftBreast,
+        leftEnd: req.body.leftEnd,
+        leftStart: req.body.leftStart,
+        setLeftBreastBtnOver: req.body.setLeftBreastBtnOver,
+        setRightBreastBtnStart: req.body.setRightBreastBtnStart
+        }},
+        (err, result) => {
+            if(err) return res.send(err)
+            res.send(result)
+        })
+})
+
+// Find and replace current state of second right button
+router.post('/updateRightEnd', (req, res) => {
+    Eat.findOneAndUpdate({ _id: req.body.stateId },
+        { $set: {
+        userId: req.body.userId,
+        stateEating: req.body.stateEating,
+        stateId: req.body.stateId,
+        endRightBreast: req.body.endRightBreast,
+        rightEnd: req.body.rightEnd,
+        rightStart: req.body.rightStart,
+        setRightBreastBtnOver: req.body.setRightBreastBtnOver,
+        setLeftBreastBtnStart: req.body.setLeftBreastBtnStart
+        }},
+        (err, result) => {
+            if(err) return res.send(err)
+            res.send(result)
+        })
+})
 
 // Delete specific item by id
 router.delete('/:id', (req, res) => {

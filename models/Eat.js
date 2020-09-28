@@ -107,6 +107,9 @@ const EatSchema = new Schema({
     rightEnd: {
         type: Boolean
     },
+    stateId: {
+        type: String
+    },
     date: {
         type: Date,
         default: Date.now
