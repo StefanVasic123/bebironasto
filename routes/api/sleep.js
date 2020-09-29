@@ -23,14 +23,16 @@ router.post('/', (req, res) => {
 })
 
 router.post('/startSleeping', (req, res) => {
-    const { userId, setInputGroup, setEndSleeping, setStartSleeping, stateSleeping, startSleeping } = req.body;
+    const { userId, setInputGroup, setEndSleeping, setStartSleeping, stateSleeping, startSleeping, setSecondText, setMainText } = req.body;
     const newSleepingRequest = new Sleep({
         userId, 
         setInputGroup, 
         setEndSleeping, 
         setStartSleeping, 
         stateSleeping, 
-        startSleeping
+        startSleeping,
+        setSecondText,
+        setMainText
     })
     newSleepingRequest.save()
     .then(item => res.json(item))

@@ -99,6 +99,8 @@ const SleepingModal = () => {
         setInputGroup(res.data.map(item => item).filter(data => data.setInputGroup).toString());
         setEndSleeping(res.data.map(item => item).filter(data => data.setEndSleeping).toString());
         setStartSleeping(res.data.map(item => item).filter(data => data.setStartSleeping).toString());
+        setMainText(res.data.map(item => item).filter(data => data.setMainText).toString());
+        setSecondText(res.data.map(item => item).filter(data => data.setSecondText).toString());
 
         // local storage
         localStorage.setItem('stateSleeping', res.data.map(item => item).map(data => data.stateSleeping));
@@ -142,7 +144,9 @@ const SleepingModal = () => {
         "setInputGroup": false,
         "setEndSleeping": true,
         "setStartSleeping": false,
-        "setShow": false
+        "setShow": false,
+        "setSecondText": true,
+        "setMainText": false
       })
       .then(res => {
         console.log(res.data);

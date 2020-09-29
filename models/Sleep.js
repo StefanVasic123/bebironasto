@@ -47,6 +47,12 @@ const SleepSchema = new Schema({
     startSleeping: {
         type: String
     },
+    setSecondText: {
+        type: Boolean
+    },
+    setMainText: {
+        type: Boolean
+    },
     date: {
         type: Date,
         default: Date.now
