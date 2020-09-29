@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
     Button,
     Modal,
@@ -35,6 +35,9 @@ const SleepingModal = () => {
     const [backBtn, setBackBtn] = useState(true);
 
     const [disabledSleeping, setDisabledSleeping] = useState(false);
+
+    const id = localStorage.getItem('stateSleepingId');
+
     useEffect(() => {
         if(localStorage.getItem('startSleeping') !== null) {
             setStartEnd(true);
@@ -59,6 +62,7 @@ const SleepingModal = () => {
     }
 
       const handleClose = () => {
+        axios.delete(`/api/sleep/${id}`).then(res => console.log(res)).catch(err => console.log(err));
         if(localStorage.getItem('infoSleep')) {
           localStorage.removeItem('infoSleep');
           setInfoSleeping(false); 
@@ -76,9 +80,41 @@ const SleepingModal = () => {
           setEndSleeping(false);
           setStartSleeping(true);
           setShow(false);
-          localStorage.removeItem('startSleeping')
+          localStorage.removeItem('stateSleeping');
+          localStorage.removeItem('stateSleepingId');
+          localStorage.removeItem('startSleeping');
         }
     }
+
+    const fetchData = useCallback(() => {
+      axios.post('/api/sleep/getState', {
+        "userId": localStorage.getItem('userId'),
+        "stateSleeping": true
+      })
+      .then(res => {
+        console.log(res.data);
+        if(res.data.length !== 0) {
+        localStorage.setItem('stateSleepingId', res.data.map(item => item).map(data => data._id));
+        // state
+        setInputGroup(res.data.map(item => item).filter(data => data.setInputGroup).toString());
+        setEndSleeping(res.data.map(item => item).filter(data => data.setEndSleeping).toString());
+        setStartSleeping(res.data.map(item => item).filter(data => data.setStartSleeping).toString());
+
+        // local storage
+        localStorage.setItem('stateSleeping', res.data.map(item => item).map(data => data.stateSleeping));
+        localStorage.setItem('startSleeping', res.data.map(item => item).map(data => data.startSleeping));
+        }
+      })
+      .catch(err => console.log(err))
+    }, [])
+
+    useEffect(() => {
+      if(show === true) {
+        fetch()
+      } else {
+        console.log(show)
+      }
+    }, [fetchData])
 
     function millisecToTimeHours(arg) {
         let seconds = (arg / 1000) % 60;
@@ -99,6 +135,21 @@ const SleepingModal = () => {
     const newDate = new Date().getDate() < 10 ? "0" + new Date().getDate() : new Date().getDate();
 
     const sleepingSubmit = () => {
+      axios.post('/api/sleep/startSleeping', {
+        "userId": localStorage.getItem('userId'),
+        "stateSleeping": true,
+        "startSleeping": Date.now(),
+        "setInputGroup": false,
+        "setEndSleeping": true,
+        "setStartSleeping": false,
+        "setShow": false
+      })
+      .then(res => {
+        console.log(res.data);
+        localStorage.setItem('stateSleepingId', res.data._id);
+      })
+      .catch(err => console.log(err));
+
         localStorage.setItem('startSleeping', Date.now());
         setInputGroup(false);
         setEndSleeping(true);
@@ -109,6 +160,7 @@ const SleepingModal = () => {
     }
 
     const wakingSubmit = () => {
+        axios.delete(`/api/sleep/${id}`).then(res => console.log(res)).catch(err => console.log(err));
         axios.post('/api/sleep', {
             "userId": localStorage.getItem('userId'),
             "startSleep": localStorage.getItem('startSleeping'),
@@ -127,8 +179,10 @@ const SleepingModal = () => {
             setStartSleeping(true);
             setShow(false);
             localStorage.removeItem('startSleeping');
-            Toast.success('Uspesno', 500)
-            addToast('Uspesno memorisano budjenje', { appearance: 'success', autoDismiss: true, autoDismissTimeout: 10000 })
+            Toast.success('Uspesno', 500);
+            addToast('Uspesno memorisano budjenje', { appearance: 'success', autoDismiss: true, autoDismissTimeout: 10000 });
+            localStorage.removeItem('stateSleeping');
+            localStorage.removeItem('stateSleepingId');
             })
         .catch(err => alert(err))
     }
@@ -171,11 +225,14 @@ const SleepingModal = () => {
     }
 
     const back = () => {
+        axios.delete(`/api/sleep/${id}`).then(res => console.log(res)).catch(err => console.log(err));
         setStartSleeping(true);
         setEndSleeping(false);
         setStartEnd(true);
         setInputGroup(true);
         localStorage.removeItem('startSleeping');
+        localStorage.removeItem('stateSleeping');
+        localStorage.removeItem('stateSleepingId');
     }
 
     const handleInfoSleep = () => {
@@ -196,7 +253,10 @@ const SleepingModal = () => {
 
     return (
       <>
-        <Button variant="link" onClick={handleShow}>
+        <Button variant="link" onClick={() => {
+          handleShow();
+          fetchData();
+        }}>
         <img src={poop} alt="babypoop" height="100em" width="100em" />
         </Button>
   

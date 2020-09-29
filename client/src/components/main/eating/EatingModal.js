@@ -178,7 +178,6 @@ function EatingModal() {
         localStorage.setItem('rightEnd', res.data.map(item => item).map(data => data.rightEnd));
   
       // states
-      //  breastFeedingString = res.data.map(item => item).filter(data => data.setBreastFeeding).toString();
         setBreastFeeding(res.data.map(item => item).filter(data => data.setBreastFeeding).toString());
         setAdaptedFeeding(res.data.map(item => item).filter(data => data.setAdaptedFeeding).toString());
         setRightBreastBtnStart(res.data.map(item => item).filter(data => data.setRightBreastBtnStart).toString());

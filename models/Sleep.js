@@ -4,7 +4,6 @@ const Schema  = mongoose.Schema;
 const SleepSchema = new Schema({
     userId: {
         type: String,
-        required: true
     },
     startSleep: {
         type: Number
@@ -17,27 +16,36 @@ const SleepSchema = new Schema({
     },
     minutes: {
         type: Number,
-        required: true
     },
     hours: {
         type: Number,
-        required: true
     },
     day: {
         type: Number,
-        required: true
     },
     month: {
         type: Number,
-        required: true
     },
     year: {
         type: Number,
-        required: true
     },
     shortDate: {
         type: String,
-        required: true
+    },
+    setEndSleeping: {
+        type: Boolean
+    },
+    setInputGroup: {
+        type: Boolean
+    },
+    setStartSleeping: {
+        type: Boolean
+    },
+    stateSleeping: {
+        type: Boolean
+    },
+    startSleeping: {
+        type: String
     },
     date: {
         type: Date,

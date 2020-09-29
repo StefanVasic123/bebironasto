@@ -22,6 +22,21 @@ router.post('/', (req, res) => {
     .then(item => res.json(item))
 })
 
+router.post('/startSleeping', (req, res) => {
+    const { userId, setInputGroup, setEndSleeping, setStartSleeping, stateSleeping, startSleeping } = req.body;
+    const newSleepingRequest = new Sleep({
+        userId, 
+        setInputGroup, 
+        setEndSleeping, 
+        setStartSleeping, 
+        stateSleeping, 
+        startSleeping
+    })
+    newSleepingRequest.save()
+    .then(item => res.json(item))
+    .catch(err => res.status(400).json({ success: false }))
+})
+
 // Get data for specific day and user
 router.post('/thisDay', (req, res) => {
     Sleep.find({ userId: req.body.userId, shortDate: req.body.shortDate })
@@ -39,6 +54,13 @@ router.post('/thisMonth', (req, res) => {
 // Get data for specific period and user
 router.post('/thisPeriod', (req, res) => {
     Sleep.find({ userId: req.body.userId, month: req.body.month, day: req.body.day })
+        .then(item => res.json(item))
+        .catch(err => res.status(400).json({ success: false }))
+})
+
+// Get state data
+router.post('/getState', (req, res) => {
+    Sleep.find({ userId: req.body.userId, stateSleeping: req.body.stateSleeping })
         .then(item => res.json(item))
         .catch(err => res.status(400).json({ success: false }))
 })
