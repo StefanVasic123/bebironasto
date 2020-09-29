@@ -93,6 +93,8 @@ const SleepingModal = () => {
       })
       .then(res => {
         console.log(res.data);
+        console.log(res.data.map(item => item).filter(data => data.setInputGroup).toString());
+        console.log(res.data.map(item => item).map(data => data.setInputGroup));
         if(res.data.length !== 0) {
         localStorage.setItem('stateSleepingId', res.data.map(item => item).map(data => data._id));
         // state

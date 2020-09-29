@@ -236,6 +236,14 @@ router.post('/updateRightEnd', (req, res) => {
         })
 })
 
+// Find if state exist or it is closed window
+router.post('/:id', (req, res) => {
+    Eat.findById(req.params.id)
+        .then(item => item.remove().then(() => res.json({ success: true })))
+        .catch(err => res.status(404).json({ success: false }))
+})
+
+
 // Delete specific item by id
 router.delete('/:id', (req, res) => {
     Eat.findById(req.params.id)
