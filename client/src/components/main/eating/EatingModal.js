@@ -481,7 +481,7 @@ function EatingModal() {
       setLeftBreastBtnOver(false);
       setRightBreastBtnStart(true);
     }
-    const handleEnd = async (arg) => {
+    const handleEnd = (arg) => {
       const id = localStorage.getItem('stateId');
 
       
@@ -506,7 +506,8 @@ function EatingModal() {
 
       const newDate = new Date().getDate() < 10 ? "0" + new Date().getDate() : new Date().getDate();
 
-      await axios.post(`/api/eat/${id}`)
+      if(id) {
+      axios.post(`/api/eat/${id}`)
         .then(res => {
           console.log(res.data);
           axios.post('/api/eat', {
@@ -595,6 +596,63 @@ function EatingModal() {
             alert('Obrok je vec memorisan sa drugog uredjaja.')
           }) 
         })
+      } else {
+        axios.post('/api/eat', {
+          "userId": localStorage.getItem('userId'),
+          "startEating": localStorage.getItem('startEating'),
+          "endEating": Date.now(),
+          "startRightBreast": localStorage.getItem('startRightBreast'),
+          "endRightBreast": localStorage.getItem('endRightBreast'),
+          "startLeftBreast": localStorage.getItem('startLeftBreast'),
+          "endLeftBreast": localStorage.getItem('endLeftBreast'),
+          "shortDate": `${new Date().getFullYear()}-${getMonth()}-${newDate}`,
+          "year": new Date().getFullYear(),
+          "month": new Date().getMonth(),
+          "day": new Date().getDate(),
+          "hours": new Date().getHours(),
+          "minutes": new Date().getMinutes(),
+          "mealDuration": Date.now() - localStorage.getItem('startEating'),
+          "rightBreastDuration": localStorage.getItem('endRightBreast') - localStorage.getItem('startRightBreast'),
+          "leftBreastDuration": localStorage.getItem('endLeftBreast') - localStorage.getItem('startLeftBreast')
+        })
+        .then(res => {
+          localStorage.removeItem('stateId');
+          localStorage.removeItem('rightIsFirst');
+          localStorage.removeItem('leftIsFirst');
+          localStorage.removeItem('startEating');
+          localStorage.removeItem('startRightBreast');
+          localStorage.removeItem('startLeftBreast');
+          localStorage.removeItem('endRightBreast');
+          localStorage.removeItem('endLeftBreast');
+          localStorage.removeItem('startEatingBlank');
+          localStorage.removeItem('rightStart');
+          localStorage.removeItem('rightEnd');
+          localStorage.removeItem('leftStart');
+          localStorage.removeItem('leftEnd');
+          localStorage.removeItem('startedAdapted');
+          
+          setDisabledEnd(false);
+          setDisabledEndRight(false);
+          setDisabledEndLeft(false);
+          setShow(false);
+          setStartBtn(false);
+          setEndBtn(false);
+          setRightBreastBtnStart(false);
+          setRightBreastBtnOver(false);
+          setLeftBreastBtnStart(false);
+          setLeftBreastBtnOver(false);
+          setBreastFeeding(true);
+          setAdaptedFeeding(true);
+          setBackEating(false);
+          setAdaptedQuantity("");
+          Toast.success('Uspesno', 500)
+          addToast('Uspesno memorisan obrok', { appearance: 'success', autoDismiss: true, autoDismissTimeout: 10000 })
+          console.log(res.data)
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      }
     } 
     
     const handleBackEating = () => {
