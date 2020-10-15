@@ -180,4 +180,10 @@ body {
       justify-content: space-around;
       padding: 0.4em 0;
     }
+
+    /* ADD NEW PAGE */
+    /* main */
+    .adding-new-container {
+      display: flex;
+    }
 }

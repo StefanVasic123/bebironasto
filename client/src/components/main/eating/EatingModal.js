@@ -112,7 +112,7 @@ function EatingModal() {
       }
     }, [])
     
-    const handleClose = () => {
+    const handleClose = async () => {
       setBreastFeeding(true);
       setAdaptedFeeding(true);
       setDisabledEnd(false);
@@ -134,7 +134,7 @@ function EatingModal() {
       
       if(localStorage.getItem('stateId')) {
         let id = localStorage.getItem('stateId');
-        axios.delete(`/api/eat/${id}`).then(res => console.log(res)).catch(err => console.log(err));
+        await axios.delete(`/api/eat/${id}`).then(res => console.log(res)).catch(err => console.log(err));
       }
       localStorage.removeItem('stateId');
       localStorage.removeItem('rightIsFirst');
@@ -204,6 +204,27 @@ function EatingModal() {
   }
 }, [fetchData]) // entry point of changing state 
 
+const fetchStateId = useCallback(() => {
+  axios.post('/api/eat/getState', {
+    "userId": localStorage.getItem('userId'),
+    "stateEating": true
+  })
+  .then(res => {
+    localStorage.setItem('stateId', res.data.map(item => item).map(data => data._id));
+    console.log(res.data.map(item => item).map(data => data._id))
+  })
+  .catch(err => alert(err))
+})
+
+useEffect(() => {
+  if(localStorage.getItem('lastClickedInstanceBeforeClosing') !== null) {
+    fetchStateId()
+    console.log('lastIntece')
+  } else {
+    console.log('not last instance')
+  }
+}, [fetchStateId])
+
     let isFirstRight = localStorage.getItem('rightIsFirst');
     let isFirstLeft = localStorage.getItem('leftIsFirst');
 
@@ -222,9 +243,9 @@ function EatingModal() {
       setBackEating(true);
     }
 
-    const insideMeal = () => {
+    const insideMeal = async () => {
       // kada je prvi obrok adaptirani onda salje error jer ne moze da uzme sve obroke
-      axios.post('/api/eat/thisDay', {
+      await axios.post('/api/eat/thisDay', {
       "userId": localStorage.getItem('userId'),
       "shortDate": `${new Date().getFullYear()}-${getMonth()}-${newDate}`
     })
@@ -248,9 +269,9 @@ function EatingModal() {
     .catch(err => console.log(err))
 }
 
-    const handleAdaptedFeedingFormEnd = (adapted) => {
+    const handleAdaptedFeedingFormEnd = async (adapted) => {
     if(adaptedQuantity === "") return alert('Upisite kolicinu obroka.')
-     axios.post('/api/eat/adapted', {
+     await axios.post('/api/eat/adapted', {
         "userId": localStorage.getItem('userId'),
         "startEating": localStorage.getItem('startEating'),
         "endEatingAdapted": Date.now(),
@@ -290,7 +311,25 @@ function EatingModal() {
       setLeftBreastBtnStart(true);
     }
 
-    const handleStart = () => {
+    const handleStart =  async() => {
+        await axios.post('/api/eat/stateStart', {
+          "stateEating": true, // LS
+          "userId": localStorage.getItem('userId'), // LS
+          "setBreastFeeding": false,
+          "setAdaptedFeeding": false,
+          "startEating": Date.now(), // LS
+          "setLeftBreastBtnStart": false,
+          "setRightBreastBtnStart": false,
+          "setEndBtn": true,
+          "setStartBtn": false,
+          "setBackEating": true
+        })
+        .then(res => {
+          console.log(res.data._id);
+          localStorage.setItem('lastClickedInstanceBeforeClosing', res.data._id)        
+        })
+        .catch(err => console.log(err)) 
+
         localStorage.setItem('startEating', Date.now());
         localStorage.setItem('startEatingBlank', true);
         setStartBtn(false);
@@ -299,9 +338,10 @@ function EatingModal() {
         setLeftBreastBtnStart(false);
         setBackEating(true);
     }
-    const handleRightBreastStart = () => {
+    const handleRightBreastStart = async () => {
+      // if its over on left or else if it will be over on right
       if(isFirstLeft === null) {
-        axios.post('/api/eat/stateRight', {
+        await axios.post('/api/eat/stateRight', {
           "stateEating": true, // LS
           "userId": localStorage.getItem('userId'), // LS
           "setBreastFeeding": false,
@@ -318,12 +358,11 @@ function EatingModal() {
           "setBackEating": true
         })
         .then(res => {
-          console.log(res.data);
+          console.log(res.data)
         })
         .catch(err => console.log(err)) 
       } else {
-
-        axios.post('/api/eat/updateRight', {
+        await axios.post('/api/eat/updateRight', {
           // query
             "stateId": localStorage.getItem('stateId'),
           // default
@@ -340,7 +379,8 @@ function EatingModal() {
             "rightEnd": false
           })
           .then(res => {
-            console.log(res.data);
+            console.log(res.data._id);
+            localStorage.setItem('lastClickedInstanceBeforeClosing', res.data._id)
           })
           .catch(err => console.log(err)) 
       } 
@@ -362,8 +402,8 @@ function EatingModal() {
       localStorage.setItem('startEating', Date.now());
       }
     }
-    const handleRightBreastOver = () => {
-      axios.post('/api/eat/updateRightEnd', {
+    const handleRightBreastOver = async () => {
+      await axios.post('/api/eat/updateRightEnd', {
       // query
         "userId": localStorage.getItem('userId'),
         "stateEating": true,
@@ -386,9 +426,10 @@ function EatingModal() {
       setRightBreastBtnOver(false);
       setLeftBreastBtnStart(true);
     }
-    const handleLeftBreastStart = () => {
+    const handleLeftBreastStart = async () => {
+      // if first is left or else it will over to the right
       if (isFirstRight === null) {
-        axios.post('/api/eat/state', {
+        await axios.post('/api/eat/state', {
           "stateEating": true, // LS
           "userId": localStorage.getItem('userId'), // LS
           "setBreastFeeding": false,
@@ -406,11 +447,11 @@ function EatingModal() {
           "stateId": ""
         })
         .then(res => {
-          console.log(res);
+          console.log(res.data)
         })
         .catch(err => console.log(err)) 
       } else {
-        axios.post('/api/eat/updateLeft', {
+        await axios.post('/api/eat/updateLeft', {
           // query
             "userId": localStorage.getItem('userId'),
             "stateEating": true,
@@ -426,7 +467,8 @@ function EatingModal() {
             "leftEnd": false
           })
           .then(res => {
-            console.log(res);
+            console.log(res.data._id);
+            localStorage.setItem('lastClickedInstanceBeforeClosing', res.data._id)
           })
           .catch(err => console.log(err)) 
       }
@@ -449,7 +491,7 @@ function EatingModal() {
       localStorage.setItem('startEating', Date.now());
       }
     }
-    const handleLeftBreastOver = () => {
+    const handleLeftBreastOver = async () => {
   /*    axios.post('/api/users/change_name', {
         'id': localStorage.getItem('userId'), 
         'name': this.state.newUserName
@@ -457,7 +499,7 @@ function EatingModal() {
         .then(res => console.log(res))   
         .catch(err => alert("Wrong User Name!"))    
 } */
-       axios.post('/api/eat/updateLeftEnd', {
+       await axios.post('/api/eat/updateLeftEnd', {
         // query
           "userId": localStorage.getItem('userId'),
           "stateEating": true,
@@ -481,10 +523,9 @@ function EatingModal() {
       setLeftBreastBtnOver(false);
       setRightBreastBtnStart(true);
     }
-    const handleEnd = (arg) => {
-      const id = localStorage.getItem('stateId');
+    const handleEnd = async (arg) => {
+     const id = localStorage.getItem('stateId');
 
-      
       localStorage.removeItem('rightEnd');
       localStorage.removeItem('leftEnd');
       if(arg) {
@@ -506,11 +547,12 @@ function EatingModal() {
 
       const newDate = new Date().getDate() < 10 ? "0" + new Date().getDate() : new Date().getDate();
 
+      // id is setted when user enter from another device - id of last Item for deleting added to LS, when user open module
       if(id) {
-      axios.post(`/api/eat/${id}`)
-        .then(res => {
+      await axios.delete(`/api/eat/${id}`)
+        .then(async res => {
           console.log(res.data);
-          axios.post('/api/eat', {
+        await axios.post('/api/eat', {
             "userId": localStorage.getItem('userId'),
             "startEating": localStorage.getItem('startEating'),
             "endEating": Date.now(),
@@ -543,6 +585,7 @@ function EatingModal() {
             localStorage.removeItem('leftStart');
             localStorage.removeItem('leftEnd');
             localStorage.removeItem('startedAdapted');
+            localStorage.removeItem('lastClickedInstanceBeforeClosing');
             
             setDisabledEnd(false);
             setDisabledEndRight(false);
@@ -578,6 +621,7 @@ function EatingModal() {
             localStorage.removeItem('leftStart');
             localStorage.removeItem('leftEnd');
             localStorage.removeItem('startedAdapted');
+            localStorage.removeItem('lastClickedInstanceBeforeClosing');
             
             setDisabledEnd(false);
             setDisabledEndRight(false);
@@ -597,7 +641,10 @@ function EatingModal() {
           }) 
         })
       } else {
-        axios.post('/api/eat', {
+        await axios.delete(`/api/eat/${id}`)
+        .then(async res => {
+          console.log(res.data);
+        await axios.post('/api/eat', {
           "userId": localStorage.getItem('userId'),
           "startEating": localStorage.getItem('startEating'),
           "endEating": Date.now(),
@@ -630,6 +677,7 @@ function EatingModal() {
           localStorage.removeItem('leftStart');
           localStorage.removeItem('leftEnd');
           localStorage.removeItem('startedAdapted');
+          localStorage.removeItem('lastClickedInstanceBeforeClosing');
           
           setDisabledEnd(false);
           setDisabledEndRight(false);
@@ -652,8 +700,9 @@ function EatingModal() {
         .catch(err => {
           console.log(err);
         })
-      }
-    } 
+      })
+    }
+  } 
     
     const handleBackEating = () => {
       setShow(false);

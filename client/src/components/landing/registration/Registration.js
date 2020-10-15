@@ -35,7 +35,9 @@ function Registration(props) {
               props.history.push('/home')
             })
         })
-        .catch(err => alert('You have entered invalid user name or email'))
+        .catch(err => alert('Bad request!'))
+        } else {
+          alert('You have entered invalid user name or email')
         }
     }
   

@@ -16,11 +16,12 @@ router.get('/find', (req, res) => {
 // @desc Post userId, start and end time 
 // Public
 router.post('/', (req, res) => {
-    const { userId, startEating, endEating, startRightBreast, endRightBreast, startLeftBreast, endLeftBreast, shortDate, year, month, day, hours, minutes, mealDuration, rightBreastDuration, leftBreastDuration } = req.body;
+    const { userId, startEating, endEating, stateEating, startRightBreast, endRightBreast, startLeftBreast, endLeftBreast, shortDate, year, month, day, hours, minutes, mealDuration, rightBreastDuration, leftBreastDuration } = req.body;
     const newEat = new Eat({
         userId,
         startEating, 
         endEating,
+        stateEating,
         startRightBreast,
         endRightBreast,
         startLeftBreast,
@@ -75,6 +76,27 @@ router.post('/state', (req, res) => {
         setRightBreastBtnStart, 
         setLeftBreastBtnStart, 
         setLeftBreastBtnOver, 
+        setEndBtn, 
+        setStartBtn, 
+        setBackEating,
+        stateId
+    })
+    newState.save()
+    .then(item => res.json(item))
+    .catch(err => res.status(400).json({ success: false}))
+})
+
+// Post data when its started eating without left or right
+router.post('/stateStart', (req, res) => {
+    const { stateEating, userId, setBreastFeeding, setAdaptedFeeding, startEating, setLeftBreastBtnStart, setRightBreastBtnStart, setEndBtn, setStartBtn, setBackEating, stateId } = req.body;
+    const newState = new Eat({
+        stateEating,
+        userId,
+        setBreastFeeding, 
+        setAdaptedFeeding, 
+        startEating, 
+        setLeftBreastBtnStart, 
+        setRightBreastBtnStart, 
         setEndBtn, 
         setStartBtn, 
         setBackEating,
