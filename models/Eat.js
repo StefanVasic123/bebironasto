@@ -107,6 +107,21 @@ const EatSchema = new Schema({
     rightEnd: {
         type: Boolean
     },
+    startedAdapted: {
+        type: Boolean
+    },
+    setAdaptedFeedingFormStart: {
+        type: Boolean
+    },
+    setAdaptedFeedingFormEnd: {
+        type: Boolean
+    },
+    setAdaptedFeedingForm: {
+        type: Boolean
+    },
+    setAdaptedQuantity: {
+        type: String
+    },
     date: {
         type: Date,
         default: Date.now

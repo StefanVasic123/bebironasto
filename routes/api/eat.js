@@ -86,6 +86,30 @@ router.post('/state', (req, res) => {
     .catch(err => res.status(400).json({ success: false}))
 })
 
+// Post data when adapted meal is started
+router.post('/stateAdapted', (req, res) => {
+    const { stateEating, userId, setBreastFeeding, setAdaptedFeeding, startEating, startedAdapted, setAdaptedFeedingForm, setAdaptedFeedingFormStart, setAdaptedFeedingFormEnd, setEndBtn, setStartBtn, setBackEating, stateId, setAdaptedQuantity } = req.body;
+    const newState = new Eat({
+        stateEating,
+        userId,
+        setBreastFeeding, 
+        setAdaptedFeeding, 
+        startEating, 
+        startedAdapted,
+        setAdaptedFeedingFormStart,
+        setAdaptedFeedingFormEnd,
+        setAdaptedFeedingForm,
+        setEndBtn, 
+        setStartBtn, 
+        setBackEating,
+        stateId,
+        setAdaptedQuantity
+    })
+    newState.save()
+    .then(item => res.json(item))
+    .catch(err => res.status(400).json({ success: false}))
+})
+
 // Post data when its started eating without left or right
 router.post('/stateStart', (req, res) => {
     const { stateEating, userId, setBreastFeeding, setAdaptedFeeding, startEating, setLeftBreastBtnStart, setRightBreastBtnStart, setEndBtn, setStartBtn, setBackEating, stateId } = req.body;

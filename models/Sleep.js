@@ -53,6 +53,9 @@ const SleepSchema = new Schema({
     setMainText: {
         type: Boolean
     },
+    setDataGrid: {
+        type: Boolean
+    },
     date: {
         type: Date,
         default: Date.now

@@ -43,6 +43,7 @@ function EatingModal() {
     const [disabledEnd, setDisabledEnd] = useState(false);
     const [disabledEndLeft, setDisabledEndLeft] = useState(false);
     const [disabledEndRight, setDisabledEndRight] = useState(false);
+    const [disabledEndAdapted, setDisabledEndAdapted] = useState(false);
 
     const milliseconds = 2700000;
     function getMonth() {
@@ -150,6 +151,8 @@ function EatingModal() {
       localStorage.removeItem('leftStart');
       localStorage.removeItem('leftEnd');
       localStorage.removeItem('startedAdapted');
+      localStorage.removeItem('lastClickedInstanceBeforeClosing');
+      localStorage.removeItem('lastAdaptedId');
     }
 
     const fetchData = useCallback(() => {
@@ -176,6 +179,9 @@ function EatingModal() {
         localStorage.setItem('rightIsFirst', res.data.map(item => item).map(data => data.rightIsFirst));
         localStorage.setItem('endRightBreast', res.data.map(item => item).map(data => data.endRightBreast));
         localStorage.setItem('rightEnd', res.data.map(item => item).map(data => data.rightEnd));
+        localStorage.setItem('stateEating', res.data.map(item => item).map(data => data.stateEating));
+        localStorage.setItem('startedAdapted', res.data.map(item => item).map(data => data.startedAdapted));
+        localStorage.setItem('lastAdaptedId', res.data.map(item => item).map(data => data._id));
   
       // states
         setBreastFeeding(res.data.map(item => item).filter(data => data.setBreastFeeding).toString());
@@ -187,6 +193,11 @@ function EatingModal() {
         setStartBtn(res.data.map(item => item).filter(data => data.setStartBtn).toString());
         setBackEating(res.data.map(item => item).filter(data => data.setBackEating).toString());
         setRightBreastBtnOver(res.data.map(item => item).filter(data => data.setRightBreastBtnOver).toString()); 
+        setAdaptedFeedingFormStart(res.data.map(item => item).filter(data => data.setAdaptedFeedingFormStart).toString());
+        setAdaptedFeedingFormEnd(res.data.map(item => item).filter(data => data.setAdaptedFeedingFormEnd).toString());
+        setAdaptedFeedingForm(res.data.map(item => item).filter(data => data.setAdaptedFeedingForm).toString());
+        res.data.map(item => item).filter(data => setAdaptedQuantity(data.setAdaptedQuantity));
+        res.data.map(item => item).filter(data => console.log(data.setAdaptedQuantity));
       }
     })
       .catch(err => console.log(err));
@@ -235,7 +246,28 @@ useEffect(() => {
       setAdaptedFeedingFormStart(true);
     }
 
-    const handleAdaptedFeedingFormStart = () => {
+    const handleAdaptedFeedingFormStart = async () => {
+        await axios.post('/api/eat/stateAdapted', {
+          "stateEating": true, // LS
+          "userId": localStorage.getItem('userId'), // LS
+          "setBreastFeeding": false,
+          "setAdaptedFeeding": false,
+          "setAdaptedFeedingForm": true,
+          "startEating": Date.now(), // LS
+          "startedAdapted": true,
+          "setAdaptedFeedingFormStart": false,
+          "setAdaptedFeedingFormEnd": true,
+          "setEndBtn": false,
+          "setStartBtn": false,
+          "setBackEating": true,
+          "setAdaptedQuantity": adaptedQuantity
+        })
+        .then(res => {
+          console.log(res.data._id);
+          localStorage.setItem('lastAdaptedId', res.data._id)
+        })
+        .catch(err => console.log(err))
+      
       localStorage.setItem('startEating', Date.now());
       localStorage.setItem('startedAdapted', true);
       setAdaptedFeedingFormStart(false);
@@ -270,6 +302,7 @@ useEffect(() => {
 }
 
     const handleAdaptedFeedingFormEnd = async (adapted) => {
+    const adaptedId = localStorage.getItem('lastAdaptedId');
     if(adaptedQuantity === "") return alert('Upisite kolicinu obroka.')
      await axios.post('/api/eat/adapted', {
         "userId": localStorage.getItem('userId'),
@@ -286,21 +319,26 @@ useEffect(() => {
         "adapted": adapted
       })
       .then(res => {
-        console.log(res.data)
-        Toast.success('Uspesno', 500)
-        addToast('Uspesno memorisan adaptiran obrok', { appearance: 'success', autoDismiss: true, autoDismissTimeout: 10000 })
-        setAdaptedFeedingFormEnd(false);
-        setBreastFeeding(true);
-        setAdaptedFeeding(true);
-        setAdaptedFeedingForm(false);
-        setShow(false);
-        setBackEating(false);
-        setAdaptedQuantity("");
+        axios.delete(`/api/eat/${adaptedId}`)
+        .then(res => console.log(res.data)).catch(err => console.log('Neuspesno obrisana prethodna instanca', err))
+          console.log(res.data)
+          Toast.success('Uspesno', 500)
+          addToast('Uspesno memorisan adaptiran obrok', { appearance: 'success', autoDismiss: true, autoDismissTimeout: 10000 })
+          setAdaptedFeedingFormEnd(false);
+          setBreastFeeding(true);
+          setAdaptedFeeding(true);
+          setAdaptedFeedingForm(false);
+          setShow(false);
+          setBackEating(false);
+          setAdaptedQuantity("");
 
-        localStorage.removeItem('startEating');
-        localStorage.removeItem('startedAdapted');
+          localStorage.removeItem('startEating');
+          localStorage.removeItem('startedAdapted');
+          localStorage.removeItem('lastAdaptedId');
+          localStorage.removeItem('stateEating');
+          localStorage.removeItem('stateId');
       })
-      .catch(err => console.log(err));
+      .catch(err => console.log(err, 'Neuspesno memorisan obrok'));
     }
 
     const handleStartBreastFeeding = () => {
@@ -698,9 +736,15 @@ useEffect(() => {
           console.log(res.data)
         })
         .catch(err => {
-          console.log(err);
+          alert('Obrok je vec memorisan sa drugog uredjaja.');
+          handleClose();        
         })
       })
+      .catch(err => {
+        alert('Obrok je vec memorisan sa drugog uredjaja.');
+        handleClose();
+      }
+      )
     }
   } 
     
@@ -781,7 +825,7 @@ useEffect(() => {
               <InputGroup className="mb-3">
                 <FormControl
                   type="number"
-                  placeholder="kolicina u ml."
+                  placeholder={adaptedQuantity !== "" ? adaptedQuantity: "kolicina u ml."}
                   aria-label="kolicina"
                   aria-describedby="basic-addon2"
                   value={adaptedQuantity}
@@ -794,7 +838,13 @@ useEffect(() => {
                 )}
                 {(adaptedFeedingFormEnd || (localStorage.getItem('startedAdapted') === true)) && (
                 <InputGroup.Append>
-                    <InputGroup.Text id="basic-addon2" onClick={insideMeal} style={{ cursor: "pointer" }}>Zavrsi</InputGroup.Text>
+                    <InputGroup.Text id="basic-addon2" disabled={disabledEndAdapted} onClick={() => { 
+                      insideMeal(); 
+                      setDisabledEndAdapted(true) 
+                      }} 
+                      style={{ cursor: "pointer" }}>
+                        Zavrsi
+                      </InputGroup.Text>
                 </InputGroup.Append>
                 )}
               </InputGroup>

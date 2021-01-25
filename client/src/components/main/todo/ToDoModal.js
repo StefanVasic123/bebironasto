@@ -56,6 +56,8 @@ const MainModal = ({
   handleClose
 }) => {
   const { addToast } = useToasts();
+  const [disabledShopping, setDisabledShopping] = useState(false);
+  const [disabledNotes, setDisabledNotes] = useState(false);
 
   const handleText = () => {
     if(text === "") {
@@ -73,6 +75,7 @@ const MainModal = ({
       })
       .then(res => {
         setText("");
+        setDisabledShopping(false)
         Toast.success('Uspesno', 500)
         addToast('Uspesno zapamcen podsetnik za kupovinu', { appearance: 'success', autoDismiss: true, autoDismissTimeout: 10000 })
       })
@@ -96,6 +99,7 @@ const handleNote = () => {
     })
     .then(res => {
       setNote("");
+      setDisabledNotes(false);
       Toast.success('Uspesno', 500)
       addToast('Uspesno zapamcena beleska', { appearance: 'success', autoDismiss: true, autoDismissTimeout: 10000 })
     })
@@ -146,13 +150,30 @@ const handleNotesInfo = () => {
     onChange={(e) => setText(e.target.value)}
   />
   <InputGroup.Append>
-    <InputGroup.Text id="basic-addon2" onClick={handleText}>Dodaj</InputGroup.Text>
+    <Button
+      variant="success" 
+      disabled={disabledShopping} 
+      id="basic-addon2" 
+      onClick={() => {
+        handleText();
+        setDisabledShopping(true)
+      }}
+      >Dodaj</Button>
   </InputGroup.Append>
 </InputGroup>
 <h3 style={{ textAlign: "center" }}>Beleska</h3>
 <InputGroup>
   <InputGroup.Prepend>
-    <InputGroup.Text onClick={handleNote}>Zabelezi</InputGroup.Text>
+    <Button 
+      variant="success"
+      style={{ cursor: "pointer" }}
+      disabled={disabledNotes} 
+      style={{ cursor: "pointer" }}
+      onClick={() => {
+        handleNote();
+        setDisabledNotes(true)
+      }}
+      >Zabelezi</Button>
   </InputGroup.Prepend>
   <FormControl as="textarea" aria-label="With textarea" value={note} onChange={(e) => setNote(e.target.value)}/>
 </InputGroup>
@@ -267,8 +288,8 @@ const NoteList = ({
     <Modal.Body>
       {notesList.map((item, index) => (
         <ul>
-          <li key={index} index={index} >
-          <div className="shopping-list-li">
+          <li key={index} index={index}  className="shopping-list-li">
+          <div>
           <Button variant="outline-info" onClick={() => handleNotesText({ index })}>
             {item.day}.{monthToLetters(item.month)}
             {item.hours}:{item.minutes}

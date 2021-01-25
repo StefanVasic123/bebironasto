@@ -15,7 +15,7 @@ import { ToastProvider, useToasts } from 'react-toast-notifications';
 const Main = () => {
     return (
         <div className="main-section">
-            <div className="row">
+            <div className="row row-eating-modal">
                 <div className="row-img">
                 <ToastProvider>
                     <EatingModal />
@@ -25,7 +25,7 @@ const Main = () => {
                     <p>Ruckanje</p>
                 </div>
             </div>
-            <div className="row">
+            <div className="row row-relieve-modal">
                 <div className="row-img">
                 <ToastProvider>
                     <RelieveModal />
@@ -35,7 +35,7 @@ const Main = () => {
                     <p>Ukakanko</p>
                 </div>
             </div>
-            <div className="row">
+            <div className="row row-sleeping-modal">
                 <div className="row-img">
                 <ToastProvider>
                     <SleepingModal />
@@ -45,7 +45,7 @@ const Main = () => {
                     <p>Spavkanje</p>
                 </div>
             </div>
-            <div className="row">
+            <div className="row row-todo-modal">
                 <div className="row-img">
                     <ToDoModal />
                 </div>

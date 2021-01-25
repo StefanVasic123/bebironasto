@@ -28,6 +28,7 @@ const SleepingModal = () => {
     const [endSleeping, setEndSleeping] = useState(false);
     const [startEnd, setStartEnd] = useState(true);
     const [inputGroup, setInputGroup] = useState(true);
+    const [dataGrid, setDataGrid] = useState(false);
     
     const [infoSleeping, setInfoSleeping] = useState(false);
     const [info, setInfo] = useState(true);
@@ -95,7 +96,7 @@ const SleepingModal = () => {
         console.log(res.data);
         console.log(res.data.map(item => item).filter(data => data.setInputGroup).toString());
         console.log(res.data.map(item => item).map(data => data.setInputGroup));
-        if(res.data.length !== 0) {
+        if(res.data.length > 0) {
         localStorage.setItem('stateSleepingId', res.data.map(item => item).map(data => data._id));
         // state
         setInputGroup(res.data.map(item => item).filter(data => data.setInputGroup).toString());
@@ -103,6 +104,10 @@ const SleepingModal = () => {
         setStartSleeping(res.data.map(item => item).filter(data => data.setStartSleeping).toString());
         setMainText(res.data.map(item => item).filter(data => data.setMainText).toString());
         setSecondText(res.data.map(item => item).filter(data => data.setSecondText).toString());
+       // setDataGrid(res.data.map(item => item).filter(data => data.setDataGrid).toString());
+        res.data.map(item => item).filter(data => setDataGrid(data.setDataGrid));
+        console.log(setDataGrid(res.data.map(item => item).filter(data => data.setDataGrid).toString()));
+        res.data.map(item => item).filter(data => console.log(data.setDataGrid))
 
         // local storage
         localStorage.setItem('stateSleeping', res.data.map(item => item).map(data => data.stateSleeping));
@@ -148,7 +153,9 @@ const SleepingModal = () => {
         "setStartSleeping": false,
         "setShow": false,
         "setSecondText": true,
-        "setMainText": false
+        "setMainText": false,
+        "setDataGrid": true,
+        // trebam tu da stavim state sleeping id ma ne bre, uzmem samo res.data._id
       })
       .then(res => {
         console.log(res.data);
@@ -311,12 +318,11 @@ const SleepingModal = () => {
                 Spavkanje
             </Button>
             )}
-            {localStorage.getItem('startSleeping') && (
+            {(localStorage.getItem('startSleeping') || dataGrid) && (
             <div>
               <div>
-              <b>spavanje od: {`${new Date(JSON.parse(localStorage.getItem('startSleeping'))).getHours()}h : ${new Date(JSON.parse(localStorage.getItem('startSleeping'))).getMinutes()}min, trajanje sna: ${millisecToTimeHours(Date.now() - JSON.parse(localStorage.getItem('startSleeping')))}`}</b>
+              <b>spavanje od: {`${new Date(JSON.parse(Number(localStorage.getItem('startSleeping')))).getHours()}h : ${new Date(JSON.parse(localStorage.getItem('startSleeping'))).getMinutes()}min, trajanje sna: ${millisecToTimeHours(Date.now() - JSON.parse(localStorage.getItem('startSleeping')))}`}</b>
               </div>
-
                 <div>
                 <Button disabled={disabledSleeping} onClick={() => {
                   wakingSubmit();
