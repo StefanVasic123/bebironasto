@@ -43,7 +43,7 @@ const SleepingDailyChart = () => {
       setSleepingDurationMilliseconds(res.data.map(item => item.sleepingDuration).reduce((a, b) => a + b))
       setSleepingDurationTotal(millisecToHours(res.data.map(item => item.sleepingDuration).reduce((a, b) => a + b)))
     })
-    .catch(err => alert(err))
+    .catch(err => console.log(err))
     }
     function awakeTotal() {
       // koliko je sati proslo od pocetka dana tj koliko je sati. minuta
@@ -61,8 +61,6 @@ const SleepingDailyChart = () => {
   sleepingTime();
   awakeTotal();
 }, [])
-
-console.log(sleepingDurationTotal)
 
   const data = {
   labels: ['Spavkalo', 'Budno'],
@@ -84,7 +82,7 @@ console.log(sleepingDurationTotal)
 }
   return (
   <>
-    <div className='header' style={{ width: "35%", height: "35%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+    <div className='info-chart-row'>
       <h3 className='title'>Spavanje</h3>
       <Pie data={data} />
     </div>

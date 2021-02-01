@@ -39,9 +39,12 @@ const options = {
 
 const RelieveDailyChart = () => {
     const [description, setDescription] = useState([]);
-    const [hours, setHours] = useState([]);
-    const [minutes, setMinutes] = useState([]);
     const [hoursMinutes, setHoursMinutes] = useState([]);
+    const [colorData, setColorData] = useState([]);
+
+    useEffect(() => {
+      bgColorData()
+    }, [])
 
     // treba mi vreme ukakanka
     // treba mi boja ukakankastog
@@ -51,41 +54,45 @@ const RelieveDailyChart = () => {
             shortDate: `${new Date().getFullYear()}-${getMonth()}-${newDate}`
         })
         .then(res => {
-            console.log(res.data);
             setDescription(res.data.map(item => item.description));
-            setHours(res.data.map(item => item.hours));
-            setMinutes(res.data.map(item => item.minutes));
             setHoursMinutes(res.data.map(item => {
                 return { "x": parseFloat(`${item.hours}.${item.minutes}`), "y": parseFloat(`${item.hours}.${item.minutes}`) }
             }))
-            console.log(res.data.map(item => item.description), res.data.map(item => item.hours), res.data.map(item => item.minutes), res.data.map(item => { return { "x": parseFloat(`${item.hours}.${item.minutes}`), "y": parseFloat(`${item.hours}.${item.minutes}`) }}))
         })
         .catch(err => console.log(err))
     }
 
     function bgColor(color) {
         switch(color) {
-            case("zuta"):
+            case("Zuta"):
                 return 'rgba(238, 238, 0, 1)';
-            case("zelena"):
+            case("Zelena"):
                 return 'rgba(0, 230, 64, 1)';
-            case("braon"):
+            case("Braon"):
                 return 'rgba(130,90,44,1 )';
-            case("proliv"): 
+            case("Proliv"): 
                 return 'rgba(189, 195, 199, 1)';
-            case("crvena"):
+            case("Crvena"):
                 return 'rgba(242, 38, 19, 1)';
         }
     }
-
-    
+  
+    function bgColorData() {
+      let colorArr = [];
+      console.log(description)
+      for(let desc of description) {
+        console.log(desc, typeof desc)
+        colorArr.push(bgColor(desc))
+      }
+      return colorArr.map(item => item)
+    }
 
     const data = { 
         datasets: [
           {
-            label: '# stolica u toku dana', // prvi label je prva boja => "zuta", bgC: swich/case => zuta === rgba(zuta)
+      //      label: description.map(item => item), // prvi label je prva boja => "zuta", bgC: swich/case => zuta === rgba(zuta)
             data: hoursMinutes === {} ? [] : hoursMinutes.map(item => item),
-            backgroundColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: bgColorData(),
           },
         ],
       }
@@ -96,7 +103,7 @@ const RelieveDailyChart = () => {
     
 return (
   <>
-    <div className='header' style={{ width: "35%", height: "35%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+    <div className='info-chart-row'>
       <h3 className='title'>Stolica</h3>
       <Scatter data={data} options={options} />
     </div>

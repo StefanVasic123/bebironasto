@@ -93,6 +93,18 @@ body {
       justify-content: space-around;
       padding: 0.4em 0;
     }
+
+    /* Info */
+    .eating-chart-row-daily {
+      display: flex;
+      flex-direction: column !important;
+    }
+
+    .info-chart-row {
+      width: 100%;
+      height: 100%;
+    }
+
     /* Eating Modal */
     /* main */
     .breast-adapted-main {
@@ -228,4 +240,12 @@ body {
 /* INFO-CHARTS */
 .chart-row-daily {
   padding-bottom: 2em;
+}
+
+.info-chart-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 50%;
+  height: 50%;
 }

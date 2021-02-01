@@ -77,7 +77,7 @@ const EatingBreastDailyChart = () => {
 }
   return (
   <>
-    <div className='header' style={{ width: "35%", height: "35%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+    <div className='info-chart-row'>
       <h3 className='eating-breast-day-title'>Dojenje</h3>
       <Bar data={data} options={options} />
     </div>

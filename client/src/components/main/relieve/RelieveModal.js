@@ -103,8 +103,7 @@ function RelieveModal() {
             Kliknite na dugme Zatvoriti kako biste zatvorili ovaj prozor.
             Dodajte i napomenu u polju ispod, ukoliko zelite.
             <select className="custom-select" id="inputGroupSelect01-relieve">
-                <option defaultValue="0">Napomena...</option>
-                <option value="0">Zuta</option>
+                <option defaultValue="0">Zuta</option>
                 <option value="1">Zelena</option>
                 <option value="2">Braon</option>
                 <option value="3">Proliv</option>

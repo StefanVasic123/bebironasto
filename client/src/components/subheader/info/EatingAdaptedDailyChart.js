@@ -37,12 +37,8 @@ const EatingAdaptedDailyChart = () => {
             shortDate: `${new Date().getFullYear()}-${getMonth()}-${newDate}`
             })
         .then(res => { 
-          console.log(res)
-            console.log(res.data.filter(item => item.endEatingAdapted))
             setMealsTime(res.data.filter(item => item.endEatingAdapted).map(item => `${item.hours}:${item.minutes}`))
-            console.log(res.data.filter(item => item.endEatingAdapted).map(item => `${item.hours}:${item.minutes}`))
             setMealsHeight(res.data.filter(item => item.endEatingAdapted).map(item => item.adaptedQuantity))
-            console.log(res.data.filter(item => item.endEatingAdapted).map(item => item.adaptedQuantity))
             })
         .catch(err => console.log(err))
     }, [])
@@ -79,7 +75,7 @@ const EatingAdaptedDailyChart = () => {
 
 return (
   <>
-    <div className='header' style={{ width: "35%", height: "35%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+    <div className='info-chart-row'>
       <h3 className='title'>Adaptirana</h3>
       <Bar data={data} options={options} />
     </div>
