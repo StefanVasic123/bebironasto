@@ -79,8 +79,8 @@ const EatingAdaptedDailyChart = () => {
 
 return (
   <>
-    <div className='header' style={{ width: "35%", height: "35%" }}>
-      <h3 className='title'>Adaptirana - dnevni grafik</h3>
+    <div className='header' style={{ width: "35%", height: "35%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <h3 className='title'>Adaptirana</h3>
       <Bar data={data} options={options} />
     </div>
   </>

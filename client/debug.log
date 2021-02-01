@@ -9,3 +9,4 @@
 [1021/084722.522:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\Vasic Stefan\AppData\Local\Google\Chrome\User Data\Crashpad\attachments\5404087c-cba4-4e7d-8932-d71616eb092a: The system cannot find the path specified. (0x3)
 [1021/084722.633:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
 [0128/211313.411:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[0129/210723.906:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)

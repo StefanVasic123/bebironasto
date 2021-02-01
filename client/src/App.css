@@ -224,3 +224,8 @@ body {
       justify-content: space-between;
       flex-wrap: wrap;
     }
+
+/* INFO-CHARTS */
+.chart-row-daily {
+  padding-bottom: 2em;
+}

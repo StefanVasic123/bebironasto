@@ -35,7 +35,6 @@ const options = {
 
 const EatingBreastDailyChart = () => {
   const [mealsTime, setMealsTime] = useState([]);
-  const [mealsType, setMealsType] = useState([]); // left/right breast
   const [leftBreast, setLeftBreast] = useState([]);
   const [rightBreast, setRightBreast] = useState([]);
 
@@ -60,13 +59,14 @@ const EatingBreastDailyChart = () => {
           })
         .catch(err => console.log(err))
     }, []) 
+
   const data = {
-  labels: mealsTime, // vreme svakog obroka pojedinacno
+  labels: mealsTime, 
   datasets: [
-    { // levA dojka
+    { 
       label: 'Leva Dojka',
-      data: leftBreast, // kolicina na levoj
-      backgroundColor: backgroundColorFunc(leftBreast) // bgcolor length of labels
+      data: leftBreast, 
+      backgroundColor: backgroundColorFunc(leftBreast) 
     },
     {
       label: 'Desna dojka',
@@ -75,11 +75,10 @@ const EatingBreastDailyChart = () => {
     },
   ],
 }
-console.log(leftBreast, rightBreast, typeof leftBreast, typeof rightBreast)
   return (
   <>
-    <div className='header' style={{ width: "35%", height: "35%" }}>
-      <h2 className='eating-breast-day-title'>Dojenje - dnevni grafik</h2>
+    <div className='header' style={{ width: "35%", height: "35%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <h3 className='eating-breast-day-title'>Dojenje</h3>
       <Bar data={data} options={options} />
     </div>
   </>
