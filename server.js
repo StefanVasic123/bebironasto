@@ -2,9 +2,45 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 const path = require('path');
+/* const http = require('http').createServer(app);
+const io = require('socket.io')(http); */
+const socketio = require('socket.io');
+const http = require('http');
+const server = http.createServer(app);
+const io = socketio(server, {
+    cors: {
+        origin: "*",
+    },
+})
+
+const { addUser, removeUser, getUser, getUsersInRoom} = require('./chatUsers');
 
 const config = require('config');
 
+io.on('connection', (socket) => {
+    socket.on('join', ({ name, room }, callback) => {
+        const { error, user } = addUser({ id: socket.id, name, room });
+        if(error) return callback(error);
+
+        socket.emit('message', { user: 'admin', text: `${user.name}, welcome to the room ${user.room}` })
+        socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name}, has joined!`});
+
+        socket.join(user.room);
+        
+        callback();
+    });
+    
+    socket.on('sendMessage', (message, callback) => {
+        const user = getUser(socket.id);
+
+        io.to(user.room).emit('message', { user: user.name, text: message });
+
+        callback();
+    })
+    socket.on('disconnect', () => {
+        console.log('user has just left')
+    })
+})
 app.use(express.json());
 
 // DB Configuration
@@ -25,6 +61,7 @@ app.use('/api/relieve', require('./routes/api/relieve'));
 app.use('/api/eat', require('./routes/api/eat'));
 app.use('/api/sleep', require('./routes/api/sleep'));
 app.use('/api/todo', require('./routes/api/todo'));
+app.use('/api/router', require('./routes/api/router'));
 
 // Serve static assets if in production
 if(process.env.NODE_ENV === 'production') {
@@ -36,5 +73,5 @@ if(process.env.NODE_ENV === 'production') {
     })
 }
 
-app.listen(port, () => console.log(`Server started on port ${port}`))
+server.listen(port, () => console.log(`Server started on port ${port}`))
 

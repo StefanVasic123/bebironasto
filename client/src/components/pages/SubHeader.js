@@ -26,8 +26,8 @@ const SubHeader = () => {
                 </Link>
             </div>
             <div>
-            <Link to="/forum">
-                    forum
+            <Link to="/join">
+                    prepiska
             </Link>
             </div>
             <div>
