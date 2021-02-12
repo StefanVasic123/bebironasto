@@ -3,10 +3,12 @@ import ScrollToBottom from 'react-scroll-to-bottom';
 
 import Message from './Message';
 
-const Messages = ({ messages, name }) => (
-    <ScrollToBottom>
-        {messages.map((message, index) => <div key={index}><Message message={message} name={name} /></div>)}
-    </ScrollToBottom>
-)
+const Messages = ({ messages }) => {
+    return (
+        <ScrollToBottom className="messages-row">
+            {messages.map((message, index) => <div key={index}><Message message={message} /></div>)}
+        </ScrollToBottom>
+    );
+};
 
 export default Messages;

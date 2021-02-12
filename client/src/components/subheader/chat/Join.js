@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+
+import CreateRoom from './CreateRoom';
+import RoomsJoin from './RoomsJoin';
+
+import './Chat.css';
+
 const Join = () => {
-    const [name, setName] = useState('');
-    const [room, setRoom] = useState('');
-    // saljemo name i room preko params-a ali je bolje da to odradimo u redux-u... 
+    const [createRow, setCreateRow] = useState(true);
+    const [roomsRow, setRoomsRow] = useState(false);
     return (
-        <div>
-            <h1>Join</h1>
-            <div><input placeholder="name" className="" type="text" onChange={(event) => setName(event.target.value)} /></div>
-            <div><input placeholder="room" className="" type="text" onChange={(event) => setRoom(event.target.value)} /></div>
-            <Link onClick={event => (!name || !room) ? event.preventDefault() : null} to={`/prepiska?name=${name}&room=${room}`}>
-                <button type="submit">Sign in to chat</button>
-            </Link>
+        <div className="join-main">
+            <div className='join-row'>
+                {createRow && (
+                    <CreateRoom />
+                )}
+                {roomsRow&& (
+                    <RoomsJoin />
+                )}
+            </div>
         </div>
     );
 };

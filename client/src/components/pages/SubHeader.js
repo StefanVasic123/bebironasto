@@ -1,10 +1,10 @@
 import React from 'react';
-import { withRouter, Link } from 'react-router-dom';
-import Advice from '../subheader/advice/Advice';
-import Forum from '../subheader/forum/Forum';
-import Info from '../subheader/info/Info';
-import Notes from '../subheader/notes/Notes';
-import QA from '../subheader/qa/QA';
+import { Link } from 'react-router-dom';
+// import Advice from '../subheader/advice/Advice';
+// import Forum from '../subheader/forum/Forum';
+// import Info from '../subheader/info/Info';
+// import Notes from '../subheader/notes/Notes';
+// import QA from '../subheader/qa/QA';
 import '../../App.css';
 
 const SubHeader = () => {

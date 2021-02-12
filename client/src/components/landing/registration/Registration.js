@@ -30,6 +30,7 @@ function Registration(props) {
         .then(res => {
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('userId', res.data.user.id);
+            localStorage.setItem('userId', name);
             alert(`Welcome ${name}`);
             Auth.login(() => {
               props.history.push('/home')

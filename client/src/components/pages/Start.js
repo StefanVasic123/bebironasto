@@ -1,12 +1,6 @@
 import React, { useEffect } from 'react';
 import { Navbar,
-         Nav,
-         Form,
-         FormControl,
-         Button,
-         NavDropdown,
-         Container,
-         Row
+         Nav
 } from 'react-bootstrap';
 import Registration from '../landing/registration/Registration';
 import Login from '../landing/login/Login';

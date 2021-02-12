@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import { Form, FormControl, InputGroup, Button } from 'react-bootstrap';
+import { FormControl, InputGroup, Button } from 'react-bootstrap';
 import axios from 'axios';
 import '../../../App.css';
-import { ToastProvider, useToasts } from 'react-toast-notifications';
+import { ToastProvider } from 'react-toast-notifications';
 import Toast from 'light-toast';
 
-    function millisecToTime(arg) {
+/*    function millisecToTime(arg) {
         let seconds = (arg / 1000) % 60;
         let minutes = (arg / (1000 * 60)) % 60;
         let hours = (arg / (1000 * 60 * 60)) % 24;
 
         return `${minutes.toFixed(0)}min : ${seconds.toFixed(0)}sec`
-    }
+    } */
 
     function millisecToTimeHours(arg) {
-        let seconds = (arg / 1000) % 60;
+    //    let seconds = (arg / 1000) % 60;
         let minutes = (arg / (1000 * 60)) % 60;
         let hours = (arg / (1000 * 60 * 60)) % 24;
 
@@ -33,21 +33,21 @@ import Toast from 'light-toast';
     const newDate = new Date().getDate() < 10 ? "0" + new Date().getDate() : new Date().getDate();
     const newDateMinusDay = (new Date().getDate() - 1) < 10 ? "0" + (new Date().getDate() - 1) : new Date().getDate() - 1;
 
-function ShowDay({ day, index }) {
+/* function ShowDay({ day, index }) {
     return(
         <div className="days">
             Time: {day.hours}, description: {day.description}
         </div>
     )
-}
+} */
 
 const Day = () => {
     const [searchDate, setSearchDate] = useState('');
     const [relieves, setRelieves] = useState([]);
-    const [relievesLength, setRelievesLength] = useState([]);
+//    const [relievesLength, setRelievesLength] = useState([]);
     const [relievesDayRow, setRelievesDayRow] = useState(false);
     const [relieveIntervalDuration, setRelieveIntervalDuration] = useState([]);
-    const { addToast } = useToasts();
+//    const { addToast } = useToasts();
 
     // Get data for specific day - interval between two actions
     async function getDay() {
@@ -58,7 +58,7 @@ const Day = () => {
             .then(res => {
                 console.log(res.data);
                 setRelieves(res.data);
-                setRelievesLength(res.data.map(item => item).length);
+            //    setRelievesLength(res.data.map(item => item).length);
                 setRelievesDayRow(true);
         
              // interval
@@ -161,7 +161,7 @@ const Day = () => {
 
 const Month = () => {
     const [relievesMonth, setRelievesMonth] = useState([]);
-    const [relievesMonthLength, setRelievesMonthLength] = useState([]);
+//    const [relievesMonthLength, setRelievesMonthLength] = useState([]);
     const [relievesMonthRow, setRelievesMonthRow] = useState(false);
     const [relieveMonthIntervalDuration, setRelieveMonthIntervalDuration] = useState([]);
 
@@ -176,7 +176,7 @@ const Month = () => {
         })
         .then(res => {
             setRelievesMonth(res.data);
-            setRelievesMonthLength(res.data.map(item => item).length);
+        //    setRelievesMonthLength(res.data.map(item => item).length);
             setRelievesMonthRow(true);
 
             // interval
@@ -260,7 +260,7 @@ const Month = () => {
 
 const Period = () => {
     const [relievesPeriod, setRelievesPeriod] = useState([]);
-    const [relievesPeriodLength, setRelievesPeriodLength] = useState([]);
+//    const [relievesPeriodLength, setRelievesPeriodLength] = useState([]);
     const [relievesPeriodRow, setRelievesPeriodRow] = useState(false);
     const [relievePeriodIntervalDuration, setRelievePeriodIntervalDuration] = useState([]);
     const [startDay, setStartDay] = useState(null);
@@ -288,7 +288,7 @@ const Period = () => {
         })
         .then(res => {
             setRelievesPeriod(res.data);
-            setRelievesPeriodLength(res.data.map(item => item).length);
+        //    setRelievesPeriodLength(res.data.map(item => item).length);
             setRelievesPeriodRow(true);
 
             // interval
@@ -483,28 +483,28 @@ const RelieveNumber = () => {
 }
 
 const RelieveInfo = () => {
-    const [searchYear, setSearchYear] = useState('');
+//    const [searchYear, setSearchYear] = useState('');
 
     // Get data from db for specific user
     //.then(res => console.log(res.data.map(item => new Date(item.date).getHours()))) ...vraca sate za chart npr
 
-    async function getData() {        
+ /*   async function getData() {        
     await axios.post('api/relieve/find', {
             userId: localStorage.getItem('userId')
     })
     .then(res => console.log(res))                       
     .catch(err => console.log(err))
-     }
+     } */
 
      // Get data for specific year
-     async function getSpecificYear() {
+/*     async function getSpecificYear() {
         await axios.post('/api/relieve/findYear', {
             userId: localStorage.getItem('userId'),
             year: searchYear
         })
         .then(res => console.log(res))
         .catch(err => console.log(err))
-     }
+     } */
 
     return (
         <div>

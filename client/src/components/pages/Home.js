@@ -1,4 +1,4 @@
-import  React, { useEffect } from 'react';
+import  React from 'react';
 import Auth from './Auth';
 import { Navbar, Nav } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';

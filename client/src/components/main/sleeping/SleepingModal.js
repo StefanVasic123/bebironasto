@@ -8,7 +8,7 @@ import {
 import axios from 'axios';
 import poop from '../../../icons/sleeping.svg';
 import SleepingInfo from './SleepingInfo';
-import { ToastProvider, useToasts } from 'react-toast-notifications';
+import { useToasts } from 'react-toast-notifications';
 import Toast from 'light-toast';
 
 const SleepingModal = () => {
@@ -25,7 +25,7 @@ const SleepingModal = () => {
     const [secondText, setSecondText] = useState(false);
 
     const [startSleeping, setStartSleeping] = useState(true);
-    const [endSleeping, setEndSleeping] = useState(false);
+//    const [endSleeping, setEndSleeping] = useState(false);
     const [startEnd, setStartEnd] = useState(true);
     const [inputGroup, setInputGroup] = useState(true);
     const [dataGrid, setDataGrid] = useState(false);
@@ -44,7 +44,7 @@ const SleepingModal = () => {
             setStartEnd(true);
             setInputGroup(false);
             setStartSleeping(false);
-            setEndSleeping(true);
+          //  setEndSleeping(true);
         } 
     }, [])
 
@@ -52,11 +52,11 @@ const SleepingModal = () => {
       setShow(true);
       setInfo(true);
       if(localStorage.getItem('startSleeping')) {
-        setEndSleeping(true)
+      //  setEndSleeping(true)
         setMainText(false);
         setSecondText(true);
       } else {
-        setEndSleeping(false);
+      //  setEndSleeping(false);
         setMainText(true);
         setSecondText(false);
       }
@@ -78,7 +78,7 @@ const SleepingModal = () => {
         } else {
           setStartEnd(true);
           setInputGroup(true);
-          setEndSleeping(false);
+        //  setEndSleeping(false);
           setStartSleeping(true);
           setShow(false);
           localStorage.removeItem('stateSleeping');
@@ -100,7 +100,7 @@ const SleepingModal = () => {
         localStorage.setItem('stateSleepingId', res.data.map(item => item).map(data => data._id));
         // state
         setInputGroup(res.data.map(item => item).filter(data => data.setInputGroup).toString());
-        setEndSleeping(res.data.map(item => item).filter(data => data.setEndSleeping).toString());
+      //  setEndSleeping(res.data.map(item => item).filter(data => data.setEndSleeping).toString());
         setStartSleeping(res.data.map(item => item).filter(data => data.setStartSleeping).toString());
         setMainText(res.data.map(item => item).filter(data => data.setMainText).toString());
         setSecondText(res.data.map(item => item).filter(data => data.setSecondText).toString());
@@ -126,7 +126,7 @@ const SleepingModal = () => {
     }, [fetchData])
 
     function millisecToTimeHours(arg) {
-        let seconds = (arg / 1000) % 60;
+    //    let seconds = (arg / 1000) % 60;
         let minutes = (arg / (1000 * 60)) % 60;
         let hours = (arg / (1000 * 60 * 60)) % 24;
 
@@ -165,7 +165,7 @@ const SleepingModal = () => {
 
         localStorage.setItem('startSleeping', Date.now());
         setInputGroup(false);
-        setEndSleeping(true);
+      //  setEndSleeping(true);
         setStartSleeping(false);
         setShow(false);
         Toast.success('Uspesno', 500)
@@ -240,7 +240,7 @@ const SleepingModal = () => {
     const back = () => {
         axios.delete(`/api/sleep/${id}`).then(res => console.log(res)).catch(err => console.log(err));
         setStartSleeping(true);
-        setEndSleeping(false);
+      //  setEndSleeping(false);
         setStartEnd(true);
         setInputGroup(true);
         localStorage.removeItem('startSleeping');

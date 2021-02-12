@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   withRouter
   } from 'react-router-dom';
   import Start from './components/pages/Start';
@@ -11,7 +10,7 @@ import {
   import ProtectedRoute from './components/pages/ProtectedRoute';
   import Info from './components/subheader/info/Info';
   import Notes from './components/subheader/notes/Notes';
-  import Forum from './components/subheader/forum/Forum';
+//  import Forum from './components/subheader/forum/Forum';
   import Advice from './components/subheader/advice/Advice';
   import QA from './components/subheader/qa/QA';
   import Join from './components/subheader/chat/Join';
@@ -32,7 +31,7 @@ import {
           <Route path='/beleske' component={withRouter(Notes)} />
           <Route path='/saveti' component={withRouter(Advice)} />
           <Route path='/join' component={withRouter(Join)} />
-          <Route path='/prepiska' component={withRouter(Chat)} />
+         <Route path='/prepiska' component={withRouter(Chat)} /> 
         {/*   <Route path='/forum' component={withRouter(Forum)} /> */}
           <Route path='/q-a' component={withRouter(QA)} />
 

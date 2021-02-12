@@ -6,11 +6,11 @@ import {
     FormControl
 } from 'react-bootstrap';
 import '../../../App.css';
-import { ToastProvider, useToasts } from 'react-toast-notifications';
+import { useToasts } from 'react-toast-notifications';
 import Toast from 'light-toast';
 
 const SleepingInfo = () => {
-    const { addToast } = useToasts();
+//    const { addToast } = useToasts();
     const [passedSleepingTime, setPassedSleepingTime] = useState('');
     const [totalSleepingTime, setTotalSleepingTime] = useState('');
     const [searchDate, setSearchDate] = useState('');

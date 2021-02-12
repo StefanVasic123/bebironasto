@@ -1,16 +1,16 @@
 import React from 'react';
 import '../../App.css';
-import bottle from '../../icons/milk-bottle.svg';
-import sleep from '../../icons/sleeping.svg';
-import todo from '../../icons/diary.svg';
+//  bottle from '../../icons/milk-bottle.svg';
+// import sleep from '../../icons/sleeping.svg';
+// import todo from '../../icons/diary.svg';
 import RelieveModal from '../main/relieve/RelieveModal';
 import EatingModal from '../main/eating/EatingModal';
-import RelieveInfo from '../main/relieve/RelieveInfo';
-import EatingInfo from '../main/eating/EatingInfo';
+// import RelieveInfo from '../main/relieve/RelieveInfo';
+// import EatingInfo from '../main/eating/EatingInfo';
 import SleepingModal from '../main/sleeping/SleepingModal';
-import SleepingInfo from '../main/sleeping/SleepingInfo';
+// import SleepingInfo from '../main/sleeping/SleepingInfo';
 import ToDoModal from '../main/todo/ToDoModal';
-import { ToastProvider, useToasts } from 'react-toast-notifications';
+import { ToastProvider } from 'react-toast-notifications';
 
 const Main = () => {
     return (

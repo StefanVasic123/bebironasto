@@ -5,7 +5,7 @@ import { Pie } from 'react-chartjs-2';
 function millisecToHours(duration) {
   const minutes = parseInt((duration / (1000 * 60)) % 60);
   const hours = parseInt((duration / (1000 * 60 * 60)) % 24);  
-  const minutesTotal = hours * 60 + minutes;
+//  const minutesTotal = hours * 60 + minutes;
   
   let parsed = parseFloat(`${hours}.${minutes}`);
   return parsed;
@@ -25,14 +25,14 @@ const newDate = new Date().getDate() < 10 ? "0" + new Date().getDate() : new Dat
 const SleepingDailyChart = () => {
     const [sleepingDurationTotal, setSleepingDurationTotal] = useState(null);
     const [sleepingDurationMilliseconds, setSleepingDurationMilliseconds] = useState(null);
-    const [awaikDurationTotal, setAwaikDurationTotal] = useState(null);
-    let now = Date.now();
+//    const [awaikDurationTotal, setAwaikDurationTotal] = useState(null);
+//    let now = Date.now();
     let date = new Date();
-    let hours = date.getHours();
+//    let hours = date.getHours();
     // staviti instancu taj dan ali 000 
     let settedHoursInstance = date.setHours(0);
     // ukupno vreme proslo do sada u satima
-    let passedTimeTodayMillisec = millisecToHours(Number(new Date()) - Number(settedHoursInstance));
+//    let passedTimeTodayMillisec = millisecToHours(Number(new Date()) - Number(settedHoursInstance));
     // ukupno vreme spavanja axios
     function sleepingTime() {
       axios.post('/api/sleep/thisDay', {

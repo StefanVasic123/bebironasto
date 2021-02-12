@@ -1,11 +1,13 @@
 import React from 'react';
+import ReactEmoji from 'react-emoji';
 
-const Message = ({ message: { user, text }, name }) => {
-    let isSentByCurrentUser = false;
+import './Chat.css';
 
-    const trimmedName = name.trim().toLowerCase();
-
-    if(user === trimmedName ) {
+const Message = ({ message: { text, user } }) => {
+    let isSentByCurrentUser = false; 
+    const name = localStorage.getItem('name').trim().toLowerCase();
+    
+    if(user === name) {
         isSentByCurrentUser = true;
     }
 
@@ -13,9 +15,9 @@ const Message = ({ message: { user, text }, name }) => {
         isSentByCurrentUser
         ? (
             <div className="message-container justify-end">
-                <p className="sent-text padding-10">{trimmedName}</p>
-                <div className="message-box">
-                    <p className="message-text color-white">{text}</p>
+                <p className="sent-text pr-10">{name}</p>
+                <div className="message-box background-blue">
+                    <p className="message-text color-white">{ReactEmoji.emojify(text)}</p>
                 </div>
             </div>
         ) : (
@@ -23,11 +25,10 @@ const Message = ({ message: { user, text }, name }) => {
                 <div className="message-box background-light">
                     <p className="message-text color-dark">{text}</p>
                 </div>
-                <p className="sent-text padding-left-10">{user}</p>
-
+                <p className="sent-text pl-10">{ReactEmoji.emojify(user)}</p>
             </div>
         )
     )
-}
+};
 
 export default Message;

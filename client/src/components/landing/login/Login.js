@@ -7,13 +7,8 @@ import {
     Nav
 } from 'react-bootstrap';
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect,
-  useHistory,
-  useLocation,
+/*  useHistory,
+  useLocation, */
   withRouter
 } from "react-router-dom";
 import axios from 'axios';
@@ -21,8 +16,8 @@ import Auth from '../../pages/Auth';
 
 
 const Login = (props) => {
-  let history = useHistory();
-  let location = useLocation();
+/*  let history = useHistory();
+  let location = useLocation(); */
   
     const [show, setShow] = useState(false);
     const [email, setEmail] = useState('');
@@ -44,7 +39,8 @@ const Login = (props) => {
         })
         .then(res => {
             localStorage.setItem('token', res.data.token);
-            localStorage.setItem('userId', res.data.user.id); // iz nekog ko zna kog razloga je user
+            localStorage.setItem('userId', res.data.user.id); 
+            localStorage.setItem('name', res.data.name)
         })
         .catch(err => alert("Wrong email or password"))
 

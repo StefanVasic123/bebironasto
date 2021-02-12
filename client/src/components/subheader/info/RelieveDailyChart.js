@@ -40,7 +40,7 @@ const options = {
 const RelieveDailyChart = () => {
     const [description, setDescription] = useState([]);
     const [hoursMinutes, setHoursMinutes] = useState([]);
-    const [colorData, setColorData] = useState([]);
+//    const [colorData, setColorData] = useState([]);
 
     useEffect(() => {
       bgColorData()
@@ -74,6 +74,8 @@ const RelieveDailyChart = () => {
                 return 'rgba(189, 195, 199, 1)';
             case("Crvena"):
                 return 'rgba(242, 38, 19, 1)';
+            default: 
+                return 'rgba(238, 238, 0, 1)';
         }
     }
   

@@ -14,7 +14,7 @@ import Toast from 'light-toast';
 // State functionst
 
 const monthToLetters = (arg) => {
-  let month = new Array();
+  let month =  []; // new Array();
   month[0] = "Januar";
   month[1] = "Februar";
   month[2] = "Mart";
@@ -168,7 +168,6 @@ const handleNotesInfo = () => {
       variant="success"
       style={{ cursor: "pointer" }}
       disabled={disabledNotes} 
-      style={{ cursor: "pointer" }}
       onClick={() => {
         handleNote();
         setDisabledNotes(true)
@@ -333,10 +332,10 @@ const [noteList, setNoteList] = useState(false);
 const [list, setList] = useState([]);
 const [notesList, setNotesList] = useState([]);
 
-const [removingItem, setRemovingItem] = useState([]);
+// const [removingItem, setRemovingItem] = useState([]);
 
-const [shoppingInput, setShoppingInput] = useState(true);
-const [notesInput, setNotesInput] = useState(true);
+// const [shoppingInput, setShoppingInput] = useState(true);
+// const [notesInput, setNotesInput] = useState(true);
 
 const handleClose = () => {
   setShow(false);

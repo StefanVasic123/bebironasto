@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Form, FormControl, InputGroup, Button } from 'react-bootstrap';
+import { FormControl, InputGroup, Button } from 'react-bootstrap';
 import axios from 'axios';
 import '../../../App.css';
-import { ToastProvider, useToasts } from 'react-toast-notifications';
+// import { useToasts } from 'react-toast-notifications';
 import Toast from 'light-toast';
 
 const EatingInfo = () => {
-    const { addToast } = useToasts();
+//    const { addToast } = useToasts();
     const [passedTime, setPassedTime] = useState("");
     const [eatingNmb, setEatingNmb] = useState([]);
     const [lastEat, setLastEat] = useState(false);
@@ -48,18 +48,18 @@ const EatingInfo = () => {
     const [periodAdaptedAll, setPeriodAdaptedAll] = useState(null);
 
     // 45 minutes to milliseconds
-    const milliseconds = 2700000;
+//    const milliseconds = 2700000;
 
     function millisecToTime(arg) {
         let seconds = (arg / 1000) % 60;
         let minutes = (arg / (1000 * 60)) % 60;
-        let hours = (arg / (1000 * 60 * 60)) % 24;
+//        let hours = (arg / (1000 * 60 * 60)) % 24;
 
         return `${minutes.toFixed(0)}min : ${seconds.toFixed(0)}sec`
     }
 
     function millisecToTimeHours(arg) {
-        let seconds = (arg / 1000) % 60;
+//        let seconds = (arg / 1000) % 60;
         let minutes = (arg / (1000 * 60)) % 60;
         let hours = (arg / (1000 * 60 * 60)) % 24;
 

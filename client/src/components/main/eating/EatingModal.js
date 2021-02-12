@@ -9,7 +9,7 @@ import axios from 'axios';
 import bottle from '../../../icons/milk-bottle.svg'
 import '../../../App.css';
 import EatingInfo from './EatingInfo';
-import { ToastProvider, useToasts } from 'react-toast-notifications';
+import { useToasts } from 'react-toast-notifications';
 import Toast from 'light-toast';
 
 function EatingModal() {
@@ -215,7 +215,7 @@ function EatingModal() {
   }
 }, [fetchData]) // entry point of changing state 
 
-const fetchStateId = useCallback(() => {
+const fetchStateId = useCallback(() => { // try without callback, becouse for cb need one more dependencies
   axios.post('/api/eat/getState', {
     "userId": localStorage.getItem('userId'),
     "stateEating": true
