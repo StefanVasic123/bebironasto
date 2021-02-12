@@ -12,7 +12,7 @@ const { addUser, removeUser, getUser, getUsersInRoom} = require('./chatUsers');
 
 const config = require('config');
 
-const io = socketio(server.listen(config.port), {
+const io = socketio(server, {
     cors: {
        origin: "*",
     },
