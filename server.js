@@ -7,16 +7,15 @@ const io = require('socket.io')(http); */
 const socketio = require('socket.io');
 const http = require('http');
 const server = http.createServer(app);
-
-const { addUser, removeUser, getUser, getUsersInRoom} = require('./chatUsers');
-
-const config = require('config');
-
 const io = socketio(server, {
     cors: {
        origin: "*",
     },
 })
+
+const { addUser, removeUser, getUser, getUsersInRoom} = require('./chatUsers');
+
+const config = require('config');
 
 io.on('connection', (socket) => { 
     socket.on('join', ({ name, room }, callback) => {
