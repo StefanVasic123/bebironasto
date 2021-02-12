@@ -9,7 +9,10 @@ const http = require('http');
 const server = http.createServer(app);
 const io = socketio(server, {
     cors: {
-        origin: "*",
+     //   origin: "*",
+        origin: "https://bebironasto.herokuapp.com/",
+        methods: ["GET", "POST"],
+        credentials: true
     },
 })
 
