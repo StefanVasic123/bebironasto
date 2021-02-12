@@ -21,7 +21,7 @@ const Chat = ({ location }) => {
     useEffect(() => {
         const { room } = queryString.parse(location.search); // get room from http query
 
-        socket = io(ENDPOINT);
+        socket = io(ENDPOINT, { transports: ['websocket', 'polling', 'flashsocket']});
 
         setRoom(room);
 
