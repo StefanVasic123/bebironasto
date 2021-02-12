@@ -16,7 +16,7 @@ const Chat = ({ location }) => {
     const [messages, setMessages] = useState([]);
     const name = localStorage.getItem('name');
 
-    const ENDPOINT = 'bebironasto.herokuapp.com/';
+    const ENDPOINT = 'https://bebironasto.herokuapp.com/';
 
     useEffect(() => {
         const { room } = queryString.parse(location.search); // get room from http query
@@ -38,11 +38,19 @@ const Chat = ({ location }) => {
         } 
     }, [ENDPOINT, location.search]);
 
-    useEffect(() => {
+/*    useEffect(() => {
         socket.on('message', message => {
             setMessages(messages => [...messages, message]);
         })
-    }, [])
+    }, []) */
+        useEffect(() => {
+            socket.on('message', message => {
+                setMessages([...messages, message])
+            })
+            return () => {
+                socket.off()
+            }
+        }, [messages])
 
     const sendMessage = (event) => {
         event.preventDefault();
