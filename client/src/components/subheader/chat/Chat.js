@@ -16,7 +16,7 @@ const Chat = ({ location }) => {
     const [messages, setMessages] = useState([]);
     const name = localStorage.getItem('name');
 
-    const ENDPOINT = 'bebironasto.herokuapp.com/';
+    const ENDPOINT = '/';
 
     useEffect(() => {
         const { room } = queryString.parse(location.search); // get room from http query
