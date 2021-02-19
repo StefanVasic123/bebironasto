@@ -16,12 +16,14 @@ const Chat = ({ location }) => {
     const [messages, setMessages] = useState([]);
     const name = localStorage.getItem('name');
 
-    const ENDPOINT = '/';
+    const ENDPOINT = 'wss://bebironasto.herokuapp.com/';
 
     useEffect(() => {
         const { room } = queryString.parse(location.search); // get room from http query
 
-        socket = io(ENDPOINT, { transports: ['websocket', 'polling', 'flashsocket']});
+        socket = io(ENDPOINT, { transports: ['websocket', 'polling', 'flashsocket']}); 
+
+    //    socket = io(ENDPOINT);
 
         setRoom(room);
 

@@ -4,9 +4,11 @@ const app = express();
 
 const path = require('path');
 
-/* const http = require('http').createServer(app);
-const io = require('socket.io')(http); */
-/* const socketio = require('socket.io');
+/* 
+const io = require('socket.io')(http); 
+*/
+const socketio = require('socket.io');
+
 const http = require('http');
 
 // create server using express
@@ -17,9 +19,10 @@ const io = socketio(server, {
        origin: "*",
     },
 })
-*/
-const server = require('http').Server(app);
+
+/* const server = require('http').Server(app);
 const io = module.exports.io = require('socket.io')(server)
+*/
 
 const { addUser, removeUser, getUser, getUsersInRoom} = require('./chatUsers');
 
