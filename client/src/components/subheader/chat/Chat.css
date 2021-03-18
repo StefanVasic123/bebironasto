@@ -1,0 +1,72 @@
+.join-row {
+    color: purple;
+    margin: 0;
+    background-image: url('../../../images/bebiron-background.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100vh;
+}
+.join-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-room-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.create-room-row-title>h2 {
+    font-weight: bold;
+}
+.create-room-row-input {
+    padding-top: 5%;
+}
+.create-room-row-input>input {
+    padding: 0.5em 4em;
+}
+
+.create-room-row-button {
+    padding-top: 4%;
+}
+.join-btn {
+    color: purple;
+    text-decoration: none;
+    background: #ffffff;
+    padding: 1em 4em;
+    border: 4px solid purple !important;
+    display: inline-block;
+    transition: all 0.4s ease 0s;
+    font-size: larger;
+    font-weight: bolder;
+}
+.join-btn:hover {
+    color: purple;
+    background: white;
+    border-color: white !important;
+    transition: all 0.4s ease 0s;    
+}
+
+.chat-row {
+    display: flex;
+    flex-direction: column;
+    margin: 5%;
+    border: 4px solid purple;
+    height: 70vh;
+}
+
+/* MESSAGE */
+.message-container {
+    display: flex;
+}
+.justify-end {
+    justify-content: flex-end;
+    justify-content: space-between;
+}
+.justify-start {
+    justify-content: space-between;
+}
