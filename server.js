@@ -7,18 +7,12 @@ const path = require('path');
 /* 
 const io = require('socket.io')(http); 
 */
-const socketio = require('socket.io');
-
 const http = require('http');
 
 // create server using express
 const server = http.createServer(app);
 
-const io = socketio(server, {
-    cors: {
-       origin: "*",
-    },
-})
+const socketio = require('socket.io');
 
 /* const server = require('http').Server(app);
 const io = module.exports.io = require('socket.io')(server)
@@ -91,5 +85,7 @@ if(process.env.NODE_ENV === 'production') {
     })
 }
 
-server.listen(port, () => console.log(`Server started on port ${port}`))
+server.listen(port, () => console.log(`Server started on port ${port}`));
+
+const io = socketio(server);
 
