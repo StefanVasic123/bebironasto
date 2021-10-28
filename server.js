@@ -84,8 +84,8 @@ if(process.env.NODE_ENV === 'production') {
         res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
     })
 }
+const io = socketio(server);
 
 server.listen(port, () => console.log(`Server started on port ${port}`));
 
-const io = socketio(server);
 
