@@ -14,6 +14,8 @@ const server = http.createServer(app);
 
 const socketio = require('socket.io');
 
+const io = socketio(server);
+
 /* const server = require('http').Server(app);
 const io = module.exports.io = require('socket.io')(server)
 */
@@ -74,8 +76,6 @@ app.use('/api/eat', require('./routes/api/eat'));
 app.use('/api/sleep', require('./routes/api/sleep'));
 app.use('/api/todo', require('./routes/api/todo'));
 app.use('/api/router', require('./routes/api/router'));
-
-const io = socketio(server);
 
 // Serve static assets if in production
 if(process.env.NODE_ENV === 'production') {
