@@ -75,6 +75,8 @@ app.use('/api/sleep', require('./routes/api/sleep'));
 app.use('/api/todo', require('./routes/api/todo'));
 app.use('/api/router', require('./routes/api/router'));
 
+const io = socketio(server);
+
 // Serve static assets if in production
 if(process.env.NODE_ENV === 'production') {
     // Set static folder
@@ -84,7 +86,6 @@ if(process.env.NODE_ENV === 'production') {
         res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
     })
 }
-const io = socketio(server);
 
 server.listen(port, () => console.log(`Server started on port ${port}`));
 
