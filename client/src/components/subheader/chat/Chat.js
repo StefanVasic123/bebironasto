@@ -16,10 +16,15 @@ const Chat = ({ location }) => {
     const [messages, setMessages] = useState([]);
     const name = localStorage.getItem('name');
 
-    const ENDPOINT = 'wss://bebironasto.herokuapp.com/';
+    // const ENDPOINT = 'wss://bebironasto.herokuapp.com/';
+
+   //  const ENDPOINT = 'wss://localhost:3000';
+   const ENDPOINT = 'ws://localhost:3000';
 
     useEffect(() => {
         const { room } = queryString.parse(location.search); // get room from http query
+
+        console.log(message)
 
         socket = io(ENDPOINT, { transports: ['websocket', 'polling', 'flashsocket']}); 
 
@@ -46,16 +51,19 @@ const Chat = ({ location }) => {
         })
     }, []) */
         useEffect(() => {
+            console.log(socket)
             socket.on('message', message => {
+                console.log('inside')
                 setMessages([...messages, message])
             })
             return () => {
                 socket.off()
             }
-        }, [messages])
+        }, [message])
 
     const sendMessage = (event) => {
         event.preventDefault();
+        console.log('sendMessage: ', event, 'message: ', message)
         if(message) {
             socket.emit('sendMessage', message, () => setMessage(''));
         }

@@ -65,7 +65,7 @@ mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB Connected...'))
     .catch(err => console.log(err));
 
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 5000;
 
 // Request /api/items search in items
 app.use('/api/items', require('./routes/api/items'));
